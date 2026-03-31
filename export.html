@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exportar Seções — Protocolo Anti-Madrugada</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- dom-to-image-more (melhor compatibilidade com gradientes e text-shadow) -->
+  <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@3.4.0/src/dom-to-image-more.min.js"></script>
+
+  <!-- JSZip para exportar todas as seções como ZIP -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+  <!-- Reutiliza os estilos originais da landing page -->
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* ══════════════════════════════════════
+       EXPORT PAGE — estilos específicos
+    ══════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      background: #000;
+      margin: 0;
+      padding: 60px 0 120px;
+      font-family: 'Inter', sans-serif;
+      /* scrollbar invisível mas funcional */
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    body::-webkit-scrollbar { display: none; }
+
+    /* ── Botão fixo "Baixar Tudo como ZIP" ── */
+    .zip-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(74,222,128,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 32px;
+      gap: 20px;
+    }
+
+    .zip-bar-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    .zip-bar-title span {
+      color: #4ade80;
+    }
+
+    .btn-zip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+      border: 1px solid rgba(74,222,128,0.4);
+      color: #4ade80;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 10px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 20px rgba(74,222,128,0.1);
+    }
+    .btn-zip:hover {
+      background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+      box-shadow: 0 0 30px rgba(74,222,128,0.2);
+      transform: translateY(-1px);
+    }
+    .btn-zip:active { transform: translateY(0); }
+    .btn-zip:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── Wrapper de cada seção ── */
+    .export-block {
+      width: 768px;
+      margin: 0 auto 100px;
+      position: relative;
+    }
+
+    /* Label acima da seção */
+    .export-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #222;           /* cinza bem escuro — invisível no print */
+      margin-bottom: 10px;
+      padding-left: 4px;
+      user-select: none;
+    }
+
+    /* Container da seção capturável */
+    .section-capture {
+      width: 768px;
+      background: #000;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Botão de download individual */
+    .btn-download {
+      margin-top: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+      border: 1px solid rgba(74,222,128,0.35);
+      color: #4ade80;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      padding: 10px 22px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 16px rgba(74,222,128,0.08);
+    }
+    .btn-download:hover {
+      background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+      box-shadow: 0 0 24px rgba(74,222,128,0.2);
+      transform: translateY(-1px);
+    }
+    .btn-download:active { transform: translateY(0); }
+    .btn-download:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .btn-download svg { flex-shrink: 0; }
+
+    /* Feedback de progresso */
+    .progress-toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(5,46,22,0.95);
+      border: 1px solid rgba(74,222,128,0.3);
+      color: #4ade80;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 6px;
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s ease;
+      z-index: 9999;
+      white-space: nowrap;
+      box-shadow: 0 0 40px rgba(74,222,128,0.15);
+    }
+    .progress-toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Ajustes de largura fixa para seções que usam vw/viewport */
+    .section-capture .hero {
+      min-height: 560px;
+    }
+    .section-capture .hero-title {
+      font-size: 56px;
+    }
+    .section-capture .section-title {
+      font-size: 42px;
+    }
+    .section-capture .hero-sub {
+      font-size: 18px;
+    }
+    .section-capture .container {
+      max-width: 720px;
+      padding: 0 24px;
+    }
+
+    /* Fix grad-text para dom-to-image-more (SVG-based fallback) */
+    .section-capture .grad-text,
+    .section-capture .grad-text-red,
+    .section-capture .grad-text-green,
+    .section-capture .grad-text-gold {
+      /* Mantém o gradient mas remove filter que pode causar problemas */
+      filter: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Barra fixa com botão ZIP ── -->
+  <div class="zip-bar">
+    <div class="zip-bar-title">
+      Exportar Seções — <span>Protocolo Anti-Madrugada</span>
+    </div>
+    <button class="btn-zip" id="btn-zip-all" onclick="downloadAllAsZip()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Baixar Tudo como ZIP
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SEÇÃO 1 — HERO
+  ══════════════════════════════════════ -->
+  <div class="export-block">
+    <div class="export-label">1. HERO</div>
+    <div class="section-capture" id="capture-1">
+      <section class="hero" id="hero">
+        <div class="hero-img-wrap">
+          <img src="hero.png" alt="Quarto escuro — a noite que não descansa" class="hero-img" />
+          <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+          <span class="badge">PROTOCOLO ANTI-MADRUGADA</span>
+          <h1 class="hero-title">
+            Seu corpo implora<br/>por descanso.<br/>
+            <span class="grad-text">Sua mente recusa.</span>
+          </h1>
+          <p class="hero-sub">O alarme interno que ninguém te ensinou a desligar.</p>
+          <div class="hero-line"></div>
+          <p class="hero-meta">O método que age antes do travesseiro — não depois.</p>
+        </div>
+      </section>
+    </div>
+    <button class="btn-download" onclick="downloadSection('capture-1', '01-hero')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Baixar como PNG
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SEÇÃO 2 — PROBLEMA
+  ══════════════════════════════════════ -->
+  <div class="export-block">
+    <div class="export-label">2. PROBLEMA</div>
+    <div class="section-capture" id="capture-2">
+      <section class="section pain-section" id="problema">
+        <div class="glow-radial glow-red"></div>
+        <div class="container">
+          <span class="section-tag tag-red">A DOR QUE VEM COM VOCÊ PARA A CAMA</span>
+          <h2 class="section-title">Você não perdeu o sono.<br/><span class="grad-text-red">Ele foi sequestrado.</span></h2>
+          <p class="section-lead">A cama deveria ser o fim do dia. Para você, virou o começo da batalha.</p>
+          <div class="pain-grid">
+            <div class="pain-card">
+              <div class="pain-icon">🧠</div>
+              <p>"Meu corpo para. Minha cabeça, não."</p>
+            </div>
+            <div class="pain-card">
+              <div class="pain-icon">⏰</div>
+              <p>Acorda 2h, 3h, 4h. Olha o relógio. O desespero cresce.</p>
+            </div>
+            <div class="pain-card">
+              <div class="pain-icon">🔁</div>
+              <p>Quanto mais tenta dormir, mais alerta fica. O esforço vira combustível.</p>
+            </div>
+            <div class="pain-card">
+              <div class="pain-icon">☀️</div>
+              <p>O dia seguinte começa derrotado antes de nascer.</p>
+            </div>
+          </div>
+          <div class="verbatim-block">
+            <span class="quote-mark">"</span>
+            <p class="verbatim-text">Deito na cama e o sono não vem, o corpo se desliga e a mente não.</p>
+            <span class="verbatim-src">— relato real, Reddit Brasil</span>
+          </div>
+        </div>
+      </section>
+    </div>
+    <button class="btn-download" onclick="downloadSection('capture-2', '02-problema')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Baixar como PNG
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SEÇÃO 3 — VERDADE
+  ══════════════════════════════════════ -->
+  <div class="export-block">
+    <div class="export-label">3. VERDADE</div>
+    <div class="section-capture" id="capture-3">
+      <section class="section truth-section" id="verdade">
+        <div class="glow-radial glow-blue"></div>
+        <div class="container">
+          <span class="section-tag tag-blue">A VERDADE QUE DÓI</span>
+          <h2 class="section-title">O problema<br/>não é<br/><span class="grad-text">falta de sono.</span></h2>
+          <p class="section-lead">É o alarme interno que ninguém te ensinou a desligar.</p>
+          <div class="truth-block">
+            <div class="truth-row">
+              <div class="truth-icon-wrap"><span class="truth-icon">⚡</span></div>
+              <div>
+                <h3 class="truth-h3">Seu cérebro ainda está em modo de vigília</h3>
+                <p class="truth-p">Quando você deita, o sistema de alerta continua ativo — processando pendências, antecipando amanhã, calculando riscos. A cama vira palco de ativação, não de descarga.</p>
+              </div>
+            </div>
+            <div class="truth-row">
+              <div class="truth-icon-wrap"><span class="truth-icon">🚫</span></div>
+              <div>
+                <h3 class="truth-h3">Forçar o sono piora o estado de alerta</h3>
+                <p class="truth-p">Cada tentativa frustrada reforça o ciclo. O esforço de "tentar dormir" sinaliza perigo para o cérebro — que responde com mais vigilância. A luta alimenta o inimigo.</p>
+              </div>
+            </div>
+            <div class="truth-row">
+              <div class="truth-icon-wrap"><span class="truth-icon">📊</span></div>
+              <div>
+                <h3 class="truth-h3">31,7% dos brasileiros relatam sintomas de insônia</h3>
+                <p class="truth-p">Não é fraqueza, não é frescura. É um estado fisiológico real — e tem solução. O Vigitel Brasil 2024 confirma: isso é uma epidemia silenciosa de hiperalerta noturno.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <button class="btn-download" onclick="downloadSection('capture-3', '03-verdade')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Baixar como PNG
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SEÇÃO 4 — SEPARAÇÃO
+  ══════════════════════════════════════ -->
+  <div class="export-block">
+    <div class="export-label">4. SEPARAÇÃO (ANTES vs DEPOIS)</div>
+    <div class="section-capture" id="capture-4">
+      <section class="section contrast-section" id="separacao">
+        <div class="container">
+          <span class="section-tag tag-white">DOIS CAMINHOS</span>
+          <h2 class="section-title">A diferença entre<br/><span class="grad-text">dormir e descansar.</span></h2>
+          <div class="contrast-wrap">
+            <div class="contrast-card card-wrong">
+              <div class="contrast-card-header">
+                <span class="contrast-label label-red">❌ SEM O FREIO NOTURNO</span>
+              </div>
+              <ul class="contrast-list">
+                <li>Deita exausto — mente acelera</li>
+                <li>Tenta forçar o sono — piora o alerta</li>
+                <li>Acorda 2h, 3h, 4h sem saber voltrar</li>
+                <li>Manhã chega antes do descanso</li>
+                <li>Repete o ciclo no dia seguinte</li>
+              </ul>
+              <div class="contrast-footer footer-red">BATALHA TODAS AS NOITES</div>
+            </div>
+            <div class="contrast-arrow-center">→</div>
+            <div class="contrast-card card-right">
+              <div class="contrast-card-header">
+                <span class="contrast-label label-green">✓ COM O FREIO NOTURNO</span>
+              </div>
+              <ul class="contrast-list">
+                <li>Protocolo de transição antes da cama</li>
+                <li>Alarme interno desarmado com método</li>
+                <li>Voltar ao sono sem pânico na madrugada</li>
+                <li>Manhã com cabeça funcional e clara</li>
+                <li>Confiança progressiva no próprio corpo</li>
+              </ul>
+              <div class="contrast-footer footer-green">ENTRADA SUAVE NO DESCANSO</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <button class="btn-download" onclick="downloadSection('capture-4', '04-separacao')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Baixar como PNG
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SEÇÃO 5 — SOLUÇÃO
+  ══════════════════════════════════════ -->
+  <div class="export-block">
+    <div class="export-label">5. SOLUÇÃO (FREIO NOTURNO)</div>
+    <div class="section-capture" id="capture-5">
+      <section class="section method-section" id="solucao">
+        <div class="glow-radial glow-green"></div>
+        <div class="container">
+          <span class="section-tag tag-green">O MECANISMO</span>
+          <h2 class="section-title">O<br/><span class="grad-text-green">Freio Noturno.</span></h2>
+          <p class="section-lead">A lógica é simples: antes de tentar dormir,<br/>você precisa primeiro baixar o estado de alerta.</p>
+          <div class="method-metaphor">
+            <div class="metaphor-card">
+              <p class="metaphor-old"><span class="label-red">Método antigo:</span><br/>Tentar estacionar o carro sem tirar o pé do acelerador.</p>
+              <div class="metaphor-divider">VS</div>
+              <p class="metaphor-new"><span class="label-green">Freio Noturno:</span><br/>Desacelerar primeiro — depois o carro para com naturalidade.</p>
+            </div>
+          </div>
+          <div class="method-steps">
+            <div class="step-item">
+              <div class="step-num">01</div>
+              <div class="step-content">
+                <h3>Encerramento Interno do Dia</h3>
+                <p>Fechar as abas abertas da mente antes de deitar. Não é meditação genérica — é um protocolo de 15 minutos com sequência definida.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">02</div>
+              <div class="step-content">
+                <h3>Desarmamento do Alerta</h3>
+                <p>Condução guiada para sair do looping mental. Seu sistema nervoso recebe o sinal que o dia terminou — sem força bruta.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">03</div>
+              <div class="step-content">
+                <h3>Ponte da Madrugada</h3>
+                <p>Para quem acorda entre 2h e 4h: uma passarela curta e específica para sair do pânico e voltar ao sono sem batalha.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <button class="btn-download" onclick="downloadSection('capture-5', '05-solucao')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Baixar como PNG
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SEÇÃO 6 — BENEFÍCIOS
+  ══════════════════════════════════════ -->
+  <div class="export-block">
+    <div class="export-label">6. BENEFÍCIOS</div>
+    <div class="section-capture" id="capture-6">
+      <section class="section icons-section" id="beneficios">
+        <div class="container">
+          <span class="section-tag tag-white">O QUE MUDA</span>
+          <h2 class="section-title">Quatro transformações.<br/><span class="grad-text">Uma noite.</span></h2>
+          <div class="icons-grid">
+            <div class="icon-card">
+              <div class="icon-hex">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+              </div>
+              <h3 class="icon-title">Mente em Silêncio</h3>
+              <p class="icon-desc">O looping de pensamentos cede lugar ao silêncio interno que o sono precisa para acontecer.</p>
+            </div>
+            <div class="icon-card">
+              <div class="icon-hex">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <h3 class="icon-title">Menos de 20 Minutos</h3>
+              <p class="icon-desc">Protocolo aplicável hoje à noite. Sem curvas de aprendizado. Sem depender de remédio.</p>
+            </div>
+            <div class="icon-card">
+              <div class="icon-hex">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <h3 class="icon-title">Madrugada Sem Pânico</h3>
+              <p class="icon-desc">Para quem acorda à noite — uma rota de retorno rápida que não alimenta o ciclo de ansiedade.</p>
+            </div>
+            <div class="icon-card">
+              <div class="icon-hex">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v1m0 16v1M4.22 4.22l.7.7m12.72 12.72.7.7M3 12H4m16 0h1M4.22 19.78l.7-.7M18.36 5.64l.7-.7"/><circle cx="12" cy="12" r="4"/></svg>
+              </div>
+              <h3 class="icon-title">Manhã Diferente</h3>
+              <p class="icon-desc">Acorda funcional, mais claro, menos destruído. O dia começa antes de começar a piorar.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <button class="btn-download" onclick="downloadSection('capture-6', '06-beneficios')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Baixar como PNG
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SEÇÃO 7 — O QUE VOCÊ RECEBE
+  ══════════════════════════════════════ -->
+  <div class="export-block">
+    <div class="export-label">7. O QUE VOCÊ RECEBE</div>
+    <div class="section-capture" id="capture-7">
+      <section class="section deliverables-section" id="recebe">
+        <div class="glow-radial glow-blue"></div>
+        <div class="container">
+          <span class="section-tag tag-blue">TUDO QUE ESTÁ INCLUÍDO</span>
+          <h2 class="section-title">O que entra<br/><span class="grad-text">no protocolo.</span></h2>
+          <div class="deliverables-list">
+            <div class="deliv-item">
+              <div class="deliv-num">01</div>
+              <div class="deliv-info">
+                <h3>Protocolo Anti-Madrugada — Guia Principal</h3>
+                <p>O método completo do Freio Noturno. Sequência aplicável imediatamente, sem pré-requisitos.</p>
+              </div>
+              <div class="deliv-badge">PRINCIPAL</div>
+            </div>
+            <div class="deliv-item">
+              <div class="deliv-num">02</div>
+              <div class="deliv-info">
+                <h3>Áudio "Mente em Paz"</h3>
+                <p>Condução guiada de 12 minutos que trabalha segurança interna e desarmamento do alerta noturno.</p>
+              </div>
+              <div class="deliv-badge">ÁUDIO</div>
+            </div>
+            <div class="deliv-item">
+              <div class="deliv-num">03</div>
+              <div class="deliv-info">
+                <h3>Checklist de Sabotadores Ocultos</h3>
+                <p>Os gatilhos que destroem sua noite antes de você deitar — e como neutralizá-los um a um.</p>
+              </div>
+              <div class="deliv-badge">BÔNUS</div>
+            </div>
+            <div class="deliv-item">
+              <div class="deliv-num">04</div>
+              <div class="deliv-info">
+                <h3>Protocolo da Madrugada (Ponte de Retorno)</h3>
+                <p>Para acordar às 2h, 3h, 4h e não entrar em pânico. Volte ao sono sem alimentar o looping.</p>
+              </div>
+              <div class="deliv-badge">BÔNUS</div>
+            </div>
+            <div class="deliv-item">
+              <div class="deliv-num">05</div>
+              <div class="deliv-info">
+                <h3>Diário de Transição Noturna</h3>
+                <p>Ferramenta de encerramento interno do dia. Fecha as abas abertas da mente em menos de 5 minutos.</p>
+              </div>
+              <div class="deliv-badge">BÔNUS</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <button class="btn-download" onclick="downloadSection('capture-7', '07-o-que-recebe')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Baixar como PNG
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SEÇÃO 8 — DEPOIMENTOS
+  ══════════════════════════════════════ -->
+  <div class="export-block">
+    <div class="export-label">8. DEPOIMENTOS</div>
+    <div class="section-capture" id="capture-8">
+      <section class="section testimonials-section" id="depoimentos">
+        <div class="container">
+          <span class="section-tag tag-green">QUEM JÁ ATIVOU O FREIO</span>
+          <h2 class="section-title">Noites que<br/><span class="grad-text-green">viraram descanso.</span></h2>
+          <div class="testimonials-grid">
+            <div class="testi-card">
+              <div class="testi-header">
+                <img src="avatar1.png" alt="Juliana M." class="testi-avatar" />
+                <div class="testi-meta">
+                  <strong>Juliana M.</strong>
+                  <span>Designer, 34 anos — São Paulo</span>
+                </div>
+                <div class="testi-stars">★★★★★</div>
+              </div>
+              <div class="testi-bubble">
+                <p>Eu acordava toda noite entre 2h e 3h e ficava horas olhando pro teto. Parecia que meu cérebro não aceitava a cama. Depois de 4 dias com o protocolo, consegui voltar a dormir sem entrar em desespero. A Ponte da Madrugada foi o que mais me ajudou.</p>
+              </div>
+              <div class="testi-time">✓ Verificado · há 3 semanas</div>
+            </div>
+            <div class="testi-card">
+              <div class="testi-header">
+                <img src="avatar2.png" alt="Rodrigo S." class="testi-avatar" />
+                <div class="testi-meta">
+                  <strong>Rodrigo S.</strong>
+                  <span>Analista Financeiro, 41 anos — Belo Horizonte</span>
+                </div>
+                <div class="testi-stars">★★★★★</div>
+              </div>
+              <div class="testi-bubble">
+                <p>Já tentei app, chá, melatonina, fone com música. Nada funcionava porque eu não entendia que o problema era o alarme interno ainda ativo. O Freio Noturno mudou a ordem das coisas. Primeiro desarmar, depois dormir. Simples assim.</p>
+              </div>
+              <div class="testi-time">✓ Verificado · há 1 mês</div>
+            </div>
+            <div class="testi-card">
+              <div class="testi-header">
+                <img src="avatar3.png" alt="Camila R." class="testi-avatar" />
+                <div class="testi-meta">
+                  <strong>Camila R.</strong>
+                  <span>Professora, 28 anos — Recife</span>
+                </div>
+                <div class="testi-stars">★★★★★</div>
+              </div>
+              <div class="testi-bubble">
+                <p>Eu chorava de desespero por não dormir. Era uma vergonha falar porque parecia que todo mundo dorme menos eu. O áudio "Mente em Paz" foi a primeira vez que senti silêncio interno de verdade. Em menos de uma semana, a cama deixou de ser meu maior medo.</p>
+              </div>
+              <div class="testi-time">✓ Verificado · há 2 semanas</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <button class="btn-download" onclick="downloadSection('capture-8', '08-depoimentos')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Baixar como PNG
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SEÇÃO 9 — ANCORAGEM DE PREÇO
+  ══════════════════════════════════════ -->
+  <div class="export-block">
+    <div class="export-label">9. ANCORAGEM DE PREÇO</div>
+    <div class="section-capture" id="capture-9">
+      <section class="section anchor-section" id="ancoragem">
+        <div class="glow-radial glow-gold"></div>
+        <div class="container">
+          <span class="section-tag tag-gold">POR QUE TÃO ACESSÍVEL?</span>
+          <h2 class="section-title">O mercado cobra caro<br/><span class="grad-text-gold">por soluções incompletas.</span></h2>
+          <div class="anchor-compare">
+            <div class="anchor-item">
+              <span class="anchor-icon">📱</span>
+              <span class="anchor-name">Apps de meditação</span>
+              <span class="anchor-price">R$ 28–80/mês</span>
+              <span class="anchor-note">Assinatura, paywall, conteúdo genérico</span>
+            </div>
+            <div class="anchor-item">
+              <span class="anchor-icon">🧘</span>
+              <span class="anchor-name">Sessão de terapia</span>
+              <span class="anchor-price">R$ 90–260/sessão</span>
+              <span class="anchor-note">Exige tempo, agenda e investimento contínuo</span>
+            </div>
+            <div class="anchor-item">
+              <span class="anchor-icon">💊</span>
+              <span class="anchor-name">Remédios para dormir</span>
+              <span class="anchor-price">R$ 40–120/caixa</span>
+              <span class="anchor-note">Dependência, efeitos colaterais, não resolve a causa</span>
+            </div>
+          </div>
+          <div class="anchor-divider-line"></div>
+          <p class="anchor-reason">Este protocolo foi criado para ser acessível porque o problema é urgente — e ninguém deveria pagar uma fortuna para aprender a desligar o próprio álerta.</p>
+        </div>
+      </section>
+    </div>
+    <button class="btn-download" onclick="downloadSection('capture-9', '09-ancoragem')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Baixar como PNG
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SEÇÃO 10 — PREÇO FINAL
+  ══════════════════════════════════════ -->
+  <div class="export-block">
+    <div class="export-label">10. PREÇO FINAL</div>
+    <div class="section-capture" id="capture-10">
+      <section class="section final-section" id="preco">
+        <div class="glow-radial glow-green-strong"></div>
+        <div class="container">
+          <div class="final-ticket">
+            <div class="ticket-texture"></div>
+            <div class="ticket-corner tl"></div>
+            <div class="ticket-corner tr"></div>
+            <div class="ticket-corner bl"></div>
+            <div class="ticket-corner br"></div>
+            <div class="ticket-content">
+              <div class="ticket-badge">LEVE TUDO ISSO HOJE</div>
+              <div class="ticket-anchor">
+                <span class="anchor-old">De <s>R$ 97,00</s></span>
+              </div>
+              <div class="ticket-price-block">
+                <span class="price-label">por apenas</span>
+                <div class="price-main">
+                  <span class="price-currency">R$</span>
+                  <span class="price-value">1</span>
+                  <span class="price-cents">,99</span>
+                </div>
+              </div>
+              <p class="ticket-benefit">Acesso Vitalício e Imediato · Sem Assinatura · Sem Renovação</p>
+              <div class="ticket-divider-line"></div>
+              <div class="product-logo">
+                <div class="logo-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#logoGrad2)" stroke-width="1.5">
+                    <defs>
+                      <linearGradient id="logoGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#4ade80"/>
+                        <stop offset="100%" stop-color="#22d3ee"/>
+                      </linearGradient>
+                    </defs>
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="M9 12l2 2 4-4"/>
+                  </svg>
+                </div>
+                <div class="logo-text-wrap">
+                  <span class="logo-text-main">PROTOCOLO</span>
+                  <span class="logo-text-sub">ANTI·MADRUGADA</span>
+                </div>
+              </div>
+              <div class="ticket-divider-line"></div>
+              <div class="guarantee-block">
+                <div class="guarantee-icon">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="M9 12l2 2 4-4"/>
+                  </svg>
+                </div>
+                <div class="guarantee-text">
+                  <strong>Garantia Incondicional de 7 Dias</strong>
+                  <p>Não funcionou? Devolvemos cada centavo — sem perguntas, sem burocracia.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <button class="btn-download" onclick="downloadSection('capture-10', '10-preco-final')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Baixar como PNG
+    </button>
+  </div>
+
+  <!-- Toast de progresso -->
+  <div class="progress-toast" id="progress-toast"></div>
+
+  <script>
+    // ── Configuração de escala para alta resolução ──
+    const SCALE = 2;
+
+    function showToast(msg) {
+      const t = document.getElementById('progress-toast');
+      t.textContent = msg;
+      t.classList.add('show');
+    }
+    function hideToast() {
+      document.getElementById('progress-toast').classList.remove('show');
+    }
+
+    // ── Captura uma seção e retorna uma Promise<Blob> ──
+    function captureSection(elementId) {
+      const el = document.getElementById(elementId);
+      const w = el.offsetWidth;
+      const h = el.offsetHeight;
+
+      return domtoimage.toPng(el, {
+        width: w * SCALE,
+        height: h * SCALE,
+        bgcolor: '#000000',
+        style: {
+          transform: `scale(${SCALE})`,
+          transformOrigin: 'top left',
+          width: w + 'px',
+          height: h + 'px',
+        }
+      });
+    }
+
+    // ── Baixa uma única seção como PNG ──
+    async function downloadSection(elementId, filename) {
+      const btn = event.currentTarget;
+      btn.disabled = true;
+      btn.textContent = 'Gerando…';
+      showToast('⏳ Capturando seção…');
+
+      try {
+        const dataUrl = await captureSection(elementId);
+        const link = document.createElement('a');
+        link.download = `protocolo-anti-madrugada_${filename}.png`;
+        link.href = dataUrl;
+        link.click();
+        showToast('✅ Download iniciado!');
+        setTimeout(hideToast, 2500);
+      } catch (err) {
+        showToast('❌ Erro ao capturar. Tente novamente.');
+        console.error(err);
+        setTimeout(hideToast, 3000);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Baixar como PNG`;
+      }
+    }
+
+    // ── Definição de todas as seções para o ZIP ──
+    const SECTIONS = [
+      { id: 'capture-1',  name: '01-hero' },
+      { id: 'capture-2',  name: '02-problema' },
+      { id: 'capture-3',  name: '03-verdade' },
+      { id: 'capture-4',  name: '04-separacao' },
+      { id: 'capture-5',  name: '05-solucao' },
+      { id: 'capture-6',  name: '06-beneficios' },
+      { id: 'capture-7',  name: '07-o-que-recebe' },
+      { id: 'capture-8',  name: '08-depoimentos' },
+      { id: 'capture-9',  name: '09-ancoragem' },
+      { id: 'capture-10', name: '10-preco-final' },
+    ];
+
+    // ── Baixa todas as seções como ZIP com arquivos separados ──
+    async function downloadAllAsZip() {
+      const zipBtn = document.getElementById('btn-zip-all');
+      zipBtn.disabled = true;
+      zipBtn.textContent = 'Preparando ZIP…';
+
+      const zip = new JSZip();
+      const folder = zip.folder('protocolo-anti-madrugada');
+
+      for (let i = 0; i < SECTIONS.length; i++) {
+        const s = SECTIONS[i];
+        showToast(`⏳ Capturando ${i + 1}/${SECTIONS.length}: ${s.name}…`);
+
+        try {
+          const dataUrl = await captureSection(s.id);
+          // Remove prefixo "data:image/png;base64,"
+          const base64 = dataUrl.split(',')[1];
+          folder.file(`protocolo-anti-madrugada_${s.name}.png`, base64, { base64: true });
+        } catch (err) {
+          console.error(`Erro ao capturar ${s.id}:`, err);
+          showToast(`⚠️ Erro em ${s.name}, pulando…`);
+          await new Promise(r => setTimeout(r, 1000));
+        }
+      }
+
+      showToast('📦 Compactando ZIP…');
+
+      try {
+        const blob = await zip.generateAsync({
+          type: 'blob',
+          compression: 'DEFLATE',
+          compressionOptions: { level: 6 }
+        });
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'protocolo-anti-madrugada_secoes.zip';
+        link.click();
+        URL.revokeObjectURL(url);
+
+        showToast('✅ ZIP baixado com sucesso!');
+        setTimeout(hideToast, 3000);
+      } catch (err) {
+        console.error('Erro ao gerar ZIP:', err);
+        showToast('❌ Erro ao gerar ZIP.');
+        setTimeout(hideToast, 3000);
+      } finally {
+        zipBtn.disabled = false;
+        zipBtn.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Baixar Tudo como ZIP`;
+      }
+    }
+  </script>
+</body>
+</html>
