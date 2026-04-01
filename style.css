@@ -4,20 +4,43 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --black:       #000000;
-  --white:       #ffffff;
-  --gray:        #a0a0a0;
-  --gray-light:  #d0d0d0;
-  --green:       #4ade80;
-  --green-dim:   #16a34a;
-  --green-dark:  #052e16;
-  --cyan:        #22d3ee;
-  --red:         #ef4444;
-  --red-dim:     #7f1d1d;
-  --blue:        #60a5fa;
-  --blue-dim:    #1e3a5f;
+  /* Base - Noite Profunda */
+  --black:       #0a0a0f;
+  --black-alt:    #0f172a;
+  --white:       #f1f5f9;
+  --white-dim:   #cbd5e1;
+  
+  /* Cores Principais */
+  --gray:        #64748b;
+  --gray-light:  #94a3b8;
+  
+  /* Verde - Repouso/Transformação */
+  --green:       #10b981;
+  --green-dim:   #059669;
+  --green-dark:  #065f46;
+  --green-soft:  #064e3b;
+  
+  /* Azul - Serenidade/Verdade */
+  --blue:        #818cf8;
+  --blue-dim:    #6366f1;
+  --blue-dark:   #1e3a5f;
+  --blue-night:  #1e293b;
+  
+  /* Vermelho - Dor/Urgência */
+  --red:         #f87171;
+  --red-dim:     #dc2626;
+  --red-dark:    #7f1d1d;
+  --red-soft:    #450a0a;
+  
+  /* Laranja - Valor/Destaque */
   --gold:        #fbbf24;
-  --gold-dim:    #713f12;
+  --gold-dim:    #f59e0b;
+  --gold-dark:   #78350f;
+  
+  /* Lavanda - Acento calmante */
+  --lavanda:     #a78bfa;
+  --lavanda-soft:#4c1d95;
+  
   --font: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
 }
 
@@ -62,11 +85,11 @@ body {
   filter: blur(100px);
   opacity: 0.14;
 }
-.glow-red    { width: 600px; height: 400px; background: radial-gradient(ellipse, #3f0f0f, transparent); top: -100px; left: 50%; transform: translateX(-50%); }
-.glow-blue   { width: 500px; height: 300px; background: radial-gradient(ellipse, #0a1824, transparent); top: -80px; left: 50%; transform: translateX(-50%); opacity: 0.12; }
-.glow-green  { width: 500px; height: 300px; background: radial-gradient(ellipse, #021408, transparent); top: -60px; left: 50%; transform: translateX(-50%); opacity: 0.12; }
-.glow-gold   { width: 600px; height: 400px; background: radial-gradient(ellipse, #2a1800, transparent); top: -80px; left: 50%; transform: translateX(-50%); opacity: 0.14; }
-.glow-green-strong { width: 700px; height: 500px; background: radial-gradient(ellipse, #0d3018 0%, transparent 70%); top: -150px; left: 50%; transform: translateX(-50%); opacity: 0.22; }
+.glow-red    { width: 600px; height: 400px; background: radial-gradient(ellipse, #450a0a, transparent); top: -100px; left: 50%; transform: translateX(-50%); }
+.glow-blue   { width: 500px; height: 300px; background: radial-gradient(ellipse, #1e3a5f, transparent); top: -80px; left: 50%; transform: translateX(-50%); opacity: 0.12; }
+.glow-green  { width: 500px; height: 300px; background: radial-gradient(ellipse, #064e3b, transparent); top: -60px; left: 50%; transform: translateX(-50%); opacity: 0.12; }
+.glow-gold   { width: 600px; height: 400px; background: radial-gradient(ellipse, #451a03, transparent); top: -80px; left: 50%; transform: translateX(-50%); opacity: 0.14; }
+.glow-green-strong { width: 700px; height: 500px; background: radial-gradient(ellipse, #064e3b 0%, transparent 70%); top: -150px; left: 50%; transform: translateX(-50%); opacity: 0.22; }
 
 /* ═══════════════════════════════════════════
    SECTION ARROWS
