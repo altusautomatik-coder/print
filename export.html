@@ -799,14 +799,12 @@
       const h = el.scrollHeight;
 
       return domtoimage.toPng(el, {
-        width: w * SCALE,
-        height: h * SCALE,
+        width: w,
+        height: h,
         bgcolor: '#000000',
+        quality: 1.0,
         style: {
-          transform: 'scale(1)',
-          transformOrigin: 'top left',
-          width: w + 'px',
-          height: h + 'px',
+          transform: 'none',
         }
       });
     }
