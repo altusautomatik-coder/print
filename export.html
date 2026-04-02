@@ -795,14 +795,19 @@
     // ── Captura uma seção e retorna uma Promise<Blob> ──
     function captureSection(elementId) {
       const el = document.getElementById(elementId);
-      
+      const w = el.offsetWidth;
+      const h = el.offsetHeight;
+
       return domtoimage.toPng(el, {
+        width: w * SCALE,
+        height: h * SCALE,
         bgcolor: '#000000',
-        pixelRatio: 2,
         style: {
-          transform: 'none',
-          margin: '0',
-          padding: '0'
+          transform: `scale(${SCALE})`,
+          transformOrigin: 'top left',
+          width: w + 'px',
+          height: h + 'px',
+          overflow: 'visible'
         }
       });
     }
