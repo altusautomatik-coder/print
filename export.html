@@ -136,17 +136,6 @@
     }
 
     /* Seção 10 - preço final */
-    .section-capture#capture-10 {
-      padding-bottom: 150px;
-      overflow: visible;
-    }
-    .section-capture#capture-10 .section {
-      padding: 80px 0 250px !important;
-      overflow: visible;
-    }
-    .section-capture#capture-10 .final-section {
-      padding-bottom: 250px !important;
-    }
     .section-capture#capture-10 .ticket-badge {
       white-space: nowrap;
     }
@@ -766,7 +755,7 @@
                   </svg>
                 </div>
                 <div class="logo-text-wrap">
-                  <span class="logo-text-main">TESTE PRO</span>
+                  <span class="logo-text-main">PROTOCOLO</span>
                   <span class="logo-text-sub">ANTI·MADRUGADA</span>
                 </div>
               </div>
@@ -821,8 +810,8 @@
     // ── Captura uma seção e retorna uma Promise<Blob> ──
     function captureSection(elementId) {
       const el = document.getElementById(elementId);
-      const w = el.offsetWidth;
-      const h = el.offsetHeight;
+      const w = el.scrollWidth;
+      const h = el.scrollHeight;
 
       return domtoimage.toPng(el, {
         width: w * SCALE,
