@@ -814,15 +814,28 @@
     function captureSection(elementId) {
       const el = document.getElementById(elementId);
       
+      // Força overflow visible temporariamente
+      const section = el.querySelector('.section');
+      if (section) section.style.overflow = 'visible';
+      
       return html2canvas(el, {
         width: el.scrollWidth,
         height: el.scrollHeight,
         backgroundColor: '#000000',
         scale: SCALE,
         useCORS: true,
-        logging: false
+        logging: false,
+        onclone: function(clonedDoc) {
+          const clonedSection = clonedDoc.querySelector('.section');
+          if (clonedSection) clonedSection.style.overflow = 'visible';
+        }
       }).then(canvas => {
+        // Restaura overflow
+        if (section) section.style.overflow = '';
         return canvas.toDataURL('image/png');
+      }).catch(err => {
+        if (section) section.style.overflow = '';
+        throw err;
       });
     }
 
