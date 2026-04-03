@@ -1005,9 +1005,7 @@ body {
   display: block;
   width: 80%;
   margin: 32px auto 16px;
-  background: 
-    linear-gradient(135deg, rgba(20, 184, 166, 0.15) 0%, rgba(6, 95, 70, 0.25) 50%, rgba(16, 185, 129, 0.2) 100%),
-    linear-gradient(135deg, #0d9488 0%, #115e59 50%, #14b8a6 100%);
+  background: linear-gradient(135deg, #0d9488 0%, #115e59 50%, #14b8a6 100%);
   color: #f0fdfa;
   font-size: 15px;
   font-weight: 700;
