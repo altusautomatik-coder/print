@@ -843,21 +843,17 @@
             
             const priceValue = clonedEl.querySelector('.price-value');
             if (priceValue) {
-              priceValue.style.background = 'linear-gradient(135deg, #4ade80, #22d3ee)';
-              priceValue.style.webkitBackgroundClip = 'text';
-              priceValue.style.backgroundClip = 'text';
-              priceValue.style.webkitTextFillColor = 'transparent';
-              priceValue.style.color = 'transparent';
+              priceValue.style.background = 'none';
+              priceValue.style.webkitTextFillColor = 'initial';
+              priceValue.style.color = '#4ade80';
             }
             
-            // Corrige logo-text-main - mesmo gradiente do escudo
+            // Corrige logo-text-main - usa cor verde
             const logoMain = clonedEl.querySelector('.logo-text-main');
             if (logoMain) {
-              logoMain.style.background = 'linear-gradient(135deg, #4ade80, #22d3ee)';
-              logoMain.style.webkitBackgroundClip = 'text';
-              logoMain.style.backgroundClip = 'text';
-              logoMain.style.webkitTextFillColor = 'transparent';
-              logoMain.style.color = 'transparent';
+              logoMain.style.background = 'none';
+              logoMain.style.webkitTextFillColor = 'initial';
+              logoMain.style.color = '#4ade80';
             }
             
             // Remove fundo das tags
