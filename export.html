@@ -818,32 +818,21 @@
         scale: SCALE,
         useCORS: true,
         logging: false,
+        allowTaint: true,
         onclone: function(clonedDoc) {
           const clonedEl = clonedDoc.getElementById(elementId);
           if (clonedEl) {
+            // Força overflow visible
             const section = clonedEl.querySelector('.section');
-            if (section) section.style.overflow = 'visible';
-            
-            // Corrige gradientes de texto
-            const gradTexts = clonedEl.querySelectorAll('.grad-text, .grad-text-red, .grad-text-green, .grad-text-gold');
-            gradTexts.forEach(el => {
-              el.style.background = 'transparent';
-              el.style.color = '#fff';
-            });
-            
-            // Corrige logo-text-main
-            const logoMain = clonedEl.querySelector('.logo-text-main');
-            if (logoMain) {
-              logoMain.style.background = 'transparent';
-              logoMain.style.color = '#4ade80';
-              logoMain.style.webkitTextFillColor = 'transparent';
-              logoMain.style.backgroundClip = 'text';
+            if (section) {
+              section.style.overflow = 'visible';
+              section.style.background = '#000';
             }
             
-            // Corrige ticket-badge
-            const ticketBadge = clonedEl.querySelector('.ticket-badge');
-            if (ticketBadge) {
-              ticketBadge.style.background = 'transparent';
+            // Preserva final-ticket gradient
+            const finalTicket = clonedEl.querySelector('.final-ticket');
+            if (finalTicket) {
+              finalTicket.style.background = 'linear-gradient(135deg, rgba(5,46,22,0.5) 0%, rgba(2,20,10,0.8) 50%, rgba(0,0,0,0.9) 100%)';
             }
           }
         }
