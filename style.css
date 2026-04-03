@@ -1044,12 +1044,11 @@ body {
     inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
-.cta-text.title-sm {
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(255,255,255,0.5);
+.cta-text.sub { 
+  font-size: 12px; 
+  color: rgba(255,255,255,0.4); 
   text-align: center;
-  margin-top: 8px;
+  margin-top: 0;
 }
 
 /* ═══════════════════════════════════════════
@@ -1128,4 +1127,10 @@ body {
   .logo-text-wrap { align-items: center; }
 
   .guarantee-block { flex-direction: column; text-align: center; }
+
+  .cta-button {
+    width: 90%;
+    font-size: 14px;
+    padding: 18px 24px;
+  }
 }
