@@ -836,6 +836,14 @@
             if (logoMain) {
               logoMain.style.background = 'transparent';
               logoMain.style.color = '#4ade80';
+              logoMain.style.webkitTextFillColor = 'transparent';
+              logoMain.style.backgroundClip = 'text';
+            }
+            
+            // Corrige ticket-badge
+            const ticketBadge = clonedEl.querySelector('.ticket-badge');
+            if (ticketBadge) {
+              ticketBadge.style.background = 'transparent';
             }
           }
         }
