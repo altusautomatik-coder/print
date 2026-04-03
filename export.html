@@ -139,6 +139,9 @@
     .section-capture#capture-10 .ticket-badge {
       white-space: nowrap;
     }
+    .section-capture#capture-10 {
+      min-height: 900px;
+    }
 
     /* Botão de download individual */
     .btn-download {
@@ -811,33 +814,28 @@
     function captureSection(elementId) {
       const el = document.getElementById(elementId);
       
-      return html2canvas(el, {
-        width: el.scrollWidth,
-        height: el.scrollHeight,
-        backgroundColor: '#000000',
-        scale: SCALE,
-        useCORS: true,
-        logging: false,
-        allowTaint: true,
-        onclone: function(clonedDoc) {
-          const clonedEl = clonedDoc.getElementById(elementId);
-          if (clonedEl) {
-            // Força overflow visible
-            const section = clonedEl.querySelector('.section');
-            if (section) {
-              section.style.overflow = 'visible';
-              section.style.background = '#000';
-            }
-            
-            // Preserva final-ticket gradient
-            const finalTicket = clonedEl.querySelector('.final-ticket');
-            if (finalTicket) {
-              finalTicket.style.background = 'linear-gradient(135deg, rgba(5,46,22,0.5) 0%, rgba(2,20,10,0.8) 50%, rgba(0,0,0,0.9) 100%)';
-            }
-          }
+      // Salva o overflow original e força visible temporariamente
+      const section = el.querySelector('.section');
+      const originalOverflow = section ? section.style.overflow : '';
+      if (section) section.style.overflow = 'visible';
+      
+      const w = el.scrollWidth;
+      const h = el.scrollHeight;
+
+      return domtoimage.toPng(el, {
+        width: w * SCALE,
+        height: h * SCALE,
+        bgcolor: '#000000',
+        style: {
+          transform: `scale(${SCALE})`,
+          transformOrigin: 'top left',
+          width: w + 'px',
+          height: h + 'px',
+          overflow: 'visible'
         }
-      }).then(canvas => {
-        return canvas.toDataURL('image/png');
+      }).finally(() => {
+        // Restaura overflow original
+        if (section) section.style.overflow = originalOverflow;
       });
     }
 
