@@ -163,7 +163,12 @@ body {
 .cta-text { text-align: center; color: #fff; }
 .cta-text.arrow { font-size: 18px; margin-top: 20px; }
 .cta-text.title { font-size: 20px; font-weight: 600; margin-top: 10px; }
-.cta-text.sub { font-size: 16px; color: #aaa; margin-top: 8px; }
+.cta-text.sub { 
+  font-size: 13px; 
+  color: rgba(255,255,255,0.35); 
+  text-align: center;
+  margin-top: 0;
+}
 
 .deliverables-list.mt-20 { margin-top: 20px; }
 .section-title.sm { font-size: 28px; margin-top: 40px; }
@@ -1008,6 +1013,43 @@ body {
   font-size: 13px;
   color: var(--gray);
   line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════
+   BOTÃO CTA
+══════════════════════════════════════════ */
+.cta-button {
+  display: block;
+  width: 80%;
+  margin: 32px auto 16px;
+  background: linear-gradient(135deg, #10b981 0%, #0d9488 100%);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 20px 32px;
+  border-radius: 4px;
+  text-decoration: none;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 0 20px rgba(74, 222, 128, 0.15),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 4px 20px rgba(74, 222, 128, 0.25),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.cta-text.title-sm {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+  margin-top: 8px;
 }
 
 /* ═══════════════════════════════════════════
