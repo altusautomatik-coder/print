@@ -118,8 +118,27 @@
       width: 768px;
       min-width: 768px;
       background: #000;
-      overflow: visible;
+      overflow: hidden;
       position: relative;
+    }
+
+    /* Remove bordas para mesclagem perfeita no checkout */
+    .section-capture * {
+      border-color: transparent !important;
+      box-shadow: none !important;
+    }
+    
+    .section-capture .section {
+      border: none !important;
+    }
+    
+    .section-capture .final-ticket {
+      border: none !important;
+      box-shadow: none !important;
+    }
+    
+    .section-capture .ticket-corner {
+      display: none !important;
     }
 
     /* Seção 9 - ajuste de padding para headline grande */
