@@ -829,35 +829,6 @@
         }
       });
     }
-            
-            // Remove fundo do price-main e price-value
-            const priceMain = clonedEl.querySelector('.price-main');
-            if (priceMain) priceMain.style.background = 'transparent';
-            
-            const priceValue = clonedEl.querySelector('.price-value');
-            if (priceValue) {
-              priceValue.style.background = 'none';
-              priceValue.style.color = '#22d3ee';
-              priceValue.style.filter = 'drop-shadow(0 0 8px rgba(74,222,128,0.6))';
-            }
-            
-            // Corrige logo-text-main
-            const logoMain = clonedEl.querySelector('.logo-text-main');
-            if (logoMain) {
-              logoMain.style.background = 'none';
-              logoMain.style.color = '#22d3ee';
-              logoMain.style.filter = 'drop-shadow(0 0 8px rgba(74,222,128,0.6))';
-            }
-            
-            // Remove fundo das tags
-            const tagGold = clonedEl.querySelector('.tag-gold');
-            if (tagGold) tagGold.style.background = 'transparent';
-          }
-        }
-      }).then(canvas => {
-        return canvas.toDataURL('image/png');
-      });
-    }
 
     // ── Baixa uma única seção como PNG ──
     async function downloadSection(elementId, filename) {
