@@ -12,6 +12,14 @@
 </head>
 <body>
 
+  <!-- HEADER FIXO PREMIUM -->
+  <header class="fixed-header">
+    <div class="header-content">
+      <div class="header-logo">PROTOCOLO<span>ANTI·MADRUGADA</span></div>
+      <a href="#preco" class="header-cta">Acessar agora</a>
+    </div>
+  </header>
+
   <!-- ═══════════════════════════════════════════
        SEÇÃO 1 — HERO CINEMATOGRÁFICO
   ═══════════════════════════════════════════ -->
@@ -403,6 +411,23 @@
     <p>© 2026 Protocolo Anti-Madrugada · Todos os direitos reservados</p>
     <p class="footer-disclaimer">Este produto é material educativo e de apoio. Não substitui acompanhamento médico ou psicológico profissional.</p>
   </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.05 });
+
+      document.querySelectorAll('.section, .pain-card, .icon-card, .deliv-item, .testi-card, .step-item, .contrast-card, .anchor-section, .final-section, .method-section, .testimonials-section, .icons-section').forEach(el => {
+        el.classList.add('animate-on-scroll');
+        observer.observe(el);
+      });
+    });
+  </script>
 
 </body>
 </html>
