@@ -1025,7 +1025,10 @@ body {
     inset 0 -1px 0 rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
-  animation: pulse 2s ease-in-out infinite;
+  animation-name: pulse;
+  animation-duration: 2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
 }
 
 @keyframes pulse {
@@ -1155,7 +1158,7 @@ body {
   .product-logo { flex-direction: column; text-align: center; }
   .logo-text-wrap { align-items: center; }
   .guarantee-block { flex-direction: column; text-align: center; }
-  .cta-button { width: 90%; font-size: 14px; padding: 18px 24px; animation: pulse 2s ease-in-out infinite !important; }
+  .cta-button { width: 90%; font-size: 14px; padding: 18px 24px; animation-name: pulse; animation-duration: 2s; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
   .fixed-header { display: none; }
   body { padding-top: 0; }
 }
