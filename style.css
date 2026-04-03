@@ -939,6 +939,7 @@ body {
   flex-direction: column;
   align-items: flex-start;
   gap: 0;
+  white-space: nowrap;
 }
 
 .logo-text-main {
@@ -950,6 +951,7 @@ body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   line-height: 1.1;
+  white-space: nowrap;
 }
 
 .logo-text-sub {
