@@ -115,8 +115,8 @@
 
     /* Container da seção capturável */
     .section-capture {
-      width: 768px;
-      min-width: 768px;
+      width: 800px;
+      min-width: 800px;
       background: #000;
       overflow: visible;
       position: relative;
@@ -212,8 +212,13 @@
       font-size: 18px;
     }
     .section-capture .container {
-      max-width: 720px;
+      max-width: 750px;
       padding: 0 24px;
+    }
+
+    /* Seção 10 - preço final */
+    .section-capture#capture-10 .final-ticket {
+      max-width: 100%;
     }
 
     /* Fix grad-text para dom-to-image-more (SVG-based fallback) */
@@ -779,8 +784,6 @@
             </div>
           </div>
         </div>
-        <!-- Spacer invisível para garantir altura total na captura -->
-        <div style="height: 150px;"></div>
       </section>
     </div>
     <button class="btn-download" onclick="downloadSection('capture-10', '10-preco-final')">
