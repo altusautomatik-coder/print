@@ -71,7 +71,7 @@ body {
   background: var(--black);
   padding: 80px 0;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* ═══════════════════════════════════════════
