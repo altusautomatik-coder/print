@@ -943,9 +943,9 @@ body {
 }
 
 .logo-text-main {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 900;
-  letter-spacing: 4px;
+  letter-spacing: 2px;
   background: linear-gradient(135deg, #4ade80, #22d3ee);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -955,10 +955,12 @@ body {
 }
 
 .logo-text-sub {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 5px;
+  letter-spacing: 3px;
   color: var(--gray);
+  white-space: nowrap;
+}
   line-height: 1.2;
 }
 
