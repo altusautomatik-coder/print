@@ -857,13 +857,6 @@
             // Remove fundo das tags
             const tagGold = clonedEl.querySelector('.tag-gold');
             if (tagGold) tagGold.style.background = 'transparent';
-            
-            // Remove fundo do logo-text-main
-            const logoMain = clonedEl.querySelector('.logo-text-main');
-            if (logoMain) {
-              logoMain.style.background = 'transparent';
-              logoMain.style.webkitTextFillColor = 'transparent';
-            }
           }
         }
       }).then(canvas => {
