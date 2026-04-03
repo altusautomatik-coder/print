@@ -156,7 +156,7 @@ body {
   margin-bottom: 32px;
 }
 
-.section-lead.mt-30 { margin-top: 30px; }
+.section-lead.mt-30 { margin-top: 40px; }
 .section-lead.mt-20 { margin-top: 20px; }
 .section-lead.sm { font-size: 14px; color: #888; margin-top: 20px; }
 
@@ -579,7 +579,7 @@ body {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .icon-card {
@@ -1056,7 +1056,11 @@ body {
   }
   
   .icons-grid {
-    margin-bottom: 20px;
+    margin-bottom: 32px;
+  }
+  
+  .section-lead.mt-30 {
+    margin-top: 48px;
   }
   
   .icon-title {
