@@ -842,7 +842,17 @@
             if (priceMain) priceMain.style.background = 'transparent';
             
             const priceValue = clonedEl.querySelector('.price-value');
-            if (priceValue) priceValue.style.background = 'transparent';
+            if (priceValue) {
+              priceValue.style.background = 'transparent';
+              priceValue.style.webkitTextFillColor = 'transparent';
+            }
+            
+            // Restaura gradiente do price-value
+            if (priceValue) {
+              priceValue.style.background = 'linear-gradient(135deg, #4ade80 0%, #22d3ee 100%)';
+              priceValue.style.webkitBackgroundClip = 'text';
+              priceValue.style.backgroundClip = 'text';
+            }
             
             // Remove fundo do ticket-anchor
             const ticketAnchor = clonedEl.querySelector('.ticket-anchor');
@@ -866,7 +876,9 @@
             // Remove fundo do logo-text-main
             const logoMain = clonedEl.querySelector('.logo-text-main');
             if (logoMain) {
-              logoMain.style.background = 'transparent';
+              logoMain.style.background = 'linear-gradient(135deg, #4ade80, #22d3ee)';
+              logoMain.style.webkitBackgroundClip = 'text';
+              logoMain.style.backgroundClip = 'text';
               logoMain.style.webkitTextFillColor = 'transparent';
             }
           }
