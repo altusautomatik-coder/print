@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <!-- dom-to-image-more para captura -->
-  <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@3.4.0/src/dom-to-image-more.min.js"></script>
+  <!-- html2canvas para captura -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
   <!-- JSZip para exportar todas as seções como ZIP -->
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
@@ -813,20 +813,16 @@
     // ── Captura uma seção e retorna uma Promise<Blob> ──
     function captureSection(elementId) {
       const el = document.getElementById(elementId);
-      const w = el.scrollWidth;
-      const h = el.scrollHeight;
-
-      return domtoimage.toPng(el, {
-        width: w * SCALE,
-        height: h * SCALE,
-        bgcolor: '#000000',
-        style: {
-          transform: `scale(${SCALE})`,
-          transformOrigin: 'top left',
-          width: w + 'px',
-          height: h + 'px',
-          overflow: 'visible'
-        }
+      
+      return html2canvas(el, {
+        width: el.scrollWidth,
+        height: el.scrollHeight,
+        backgroundColor: '#000000',
+        scale: SCALE,
+        useCORS: true,
+        logging: false
+      }).then(canvas => {
+        return canvas.toDataURL('image/png');
       });
     }
 
