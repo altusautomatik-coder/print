@@ -1151,12 +1151,11 @@ body {
   .deliv-num { width: auto; }
   .anchor-item { flex-wrap: wrap; gap: 8px; }
   .ticket-content { padding: 40px 24px; }
-  .price-value { font-size: 72px; }
+  .price-value { font-size: 64px; }
   .product-logo { flex-direction: column; text-align: center; }
   .logo-text-wrap { align-items: center; }
   .guarantee-block { flex-direction: column; text-align: center; }
-  .cta-button { width: 90%; font-size: 14px; padding: 18px 24px; animation: pulse 2s ease-in-out infinite; }
-  .price-value { font-size: 64px; }
+  .cta-button { width: 90%; font-size: 14px; padding: 18px 24px; animation: pulse 2s ease-in-out infinite !important; }
   .fixed-header { display: none; }
   body { padding-top: 0; }
 }
