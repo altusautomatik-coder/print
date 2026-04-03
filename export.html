@@ -843,14 +843,14 @@
             
             const priceValue = clonedEl.querySelector('.price-value');
             if (priceValue) {
-              priceValue.style.background = 'linear-gradient(135deg, #4ade80 0%, #22d3ee 100%)';
+              priceValue.style.background = 'linear-gradient(135deg, #4ade80, #22d3ee)';
               priceValue.style.webkitBackgroundClip = 'text';
               priceValue.style.backgroundClip = 'text';
               priceValue.style.webkitTextFillColor = 'transparent';
               priceValue.style.color = 'transparent';
             }
             
-            // Corrige logo-text-main com gradiente
+            // Corrige logo-text-main - mesmo gradiente do escudo
             const logoMain = clonedEl.querySelector('.logo-text-main');
             if (logoMain) {
               logoMain.style.background = 'linear-gradient(135deg, #4ade80, #22d3ee)';
