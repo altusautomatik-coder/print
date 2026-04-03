@@ -39,7 +39,6 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  padding-top: 64px;
 }
 
 /* HEADER FIXO */
@@ -1157,6 +1156,5 @@ body {
   .logo-text-wrap { align-items: center; }
   .guarantee-block { flex-direction: column; text-align: center; }
   .cta-button { width: 90%; font-size: 14px; padding: 18px 24px; animation-name: pulse; animation-duration: 2s; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
-  .fixed-header { display: none; }
   body { padding-top: 0; }
 }
