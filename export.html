@@ -833,7 +833,24 @@
             
             // Remove fundo do ticket-price-block (R$ 9,90)
             const priceBlock = clonedEl.querySelector('.ticket-price-block');
-            if (priceBlock) priceBlock.style.background = 'transparent';
+            if (priceBlock) {
+              priceBlock.style.background = 'transparent';
+            }
+            
+            // Remove fundo do price-main e price-value
+            const priceMain = clonedEl.querySelector('.price-main');
+            if (priceMain) priceMain.style.background = 'transparent';
+            
+            const priceValue = clonedEl.querySelector('.price-value');
+            if (priceValue) priceValue.style.background = 'transparent';
+            
+            // Remove fundo do ticket-anchor
+            const ticketAnchor = clonedEl.querySelector('.ticket-anchor');
+            if (ticketAnchor) ticketAnchor.style.background = 'transparent';
+            
+            // Remove fundo do ticket-benefit
+            const ticketBenefit = clonedEl.querySelector('.ticket-benefit');
+            if (ticketBenefit) ticketBenefit.style.background = 'transparent';
             
             // Remove fundo do export-label (número da seção)
             const exportLabel = clonedEl.querySelector('.export-label');
