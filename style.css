@@ -1042,7 +1042,20 @@ body {
 
   .pain-grid { grid-template-columns: 1fr; }
 
-  .icons-grid { grid-template-columns: 1fr; }
+  .icons-grid { 
+    grid-template-columns: 1fr; 
+    gap: 16px; 
+  }
+  
+  .icon-card {
+    padding: 28px 24px;
+    gap: 16px;
+  }
+  
+  .icon-title {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
 
   .contrast-wrap {
     flex-direction: column;
