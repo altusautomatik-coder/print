@@ -813,8 +813,8 @@
     // ── Captura uma seção e retorna uma Promise<Blob> ──
     function captureSection(elementId) {
       const el = document.getElementById(elementId);
-      const w = el.scrollWidth;
-      const h = el.scrollHeight;
+      const w = el.offsetWidth;
+      const h = el.offsetHeight;
 
       return domtoimage.toPng(el, {
         width: w * SCALE,
@@ -824,8 +824,7 @@
           transform: `scale(${SCALE})`,
           transformOrigin: 'top left',
           width: w + 'px',
-          height: h + 'px',
-          overflow: 'visible'
+          height: h + 'px'
         }
       });
     }
