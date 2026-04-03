@@ -844,29 +844,14 @@
             const priceValue = clonedEl.querySelector('.price-value');
             if (priceValue) {
               priceValue.style.background = 'transparent';
-              priceValue.style.webkitTextFillColor = 'transparent';
+              priceValue.style.color = '#4ade80';
             }
             
-            // Restaura gradiente do price-value
-            if (priceValue) {
-              priceValue.style.background = 'linear-gradient(135deg, #4ade80 0%, #22d3ee 100%)';
-              priceValue.style.webkitBackgroundClip = 'text';
-              priceValue.style.backgroundClip = 'text';
-            }
-            
-            // Remove fundo do ticket-anchor
-            const ticketAnchor = clonedEl.querySelector('.ticket-anchor');
-            if (ticketAnchor) ticketAnchor.style.background = 'transparent';
-            
-            // Remove fundo do ticket-benefit
-            const ticketBenefit = clonedEl.querySelector('.ticket-benefit');
-            if (ticketBenefit) ticketBenefit.style.background = 'transparent';
-            
-            // Remove fundo do export-label (número da seção)
-            const exportLabel = clonedEl.querySelector('.export-label');
-            if (exportLabel) {
-              exportLabel.style.background = 'transparent';
-              exportLabel.style.color = '#222';
+            // Corrige logo-text-main
+            const logoMain = clonedEl.querySelector('.logo-text-main');
+            if (logoMain) {
+              logoMain.style.background = 'transparent';
+              logoMain.style.color = '#4ade80';
             }
             
             // Remove fundo das tags
@@ -876,9 +861,7 @@
             // Remove fundo do logo-text-main
             const logoMain = clonedEl.querySelector('.logo-text-main');
             if (logoMain) {
-              logoMain.style.background = 'linear-gradient(135deg, #4ade80, #22d3ee)';
-              logoMain.style.webkitBackgroundClip = 'text';
-              logoMain.style.backgroundClip = 'text';
+              logoMain.style.background = 'transparent';
               logoMain.style.webkitTextFillColor = 'transparent';
             }
           }
