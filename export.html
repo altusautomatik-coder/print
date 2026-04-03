@@ -819,11 +819,24 @@
         useCORS: true,
         logging: false,
         onclone: function(clonedDoc) {
-          // Força overflow visible no clone
           const clonedEl = clonedDoc.getElementById(elementId);
           if (clonedEl) {
             const section = clonedEl.querySelector('.section');
             if (section) section.style.overflow = 'visible';
+            
+            // Corrige gradientes de texto
+            const gradTexts = clonedEl.querySelectorAll('.grad-text, .grad-text-red, .grad-text-green, .grad-text-gold');
+            gradTexts.forEach(el => {
+              el.style.background = 'transparent';
+              el.style.color = '#fff';
+            });
+            
+            // Corrige logo-text-main
+            const logoMain = clonedEl.querySelector('.logo-text-main');
+            if (logoMain) {
+              logoMain.style.background = 'transparent';
+              logoMain.style.color = '#4ade80';
+            }
           }
         }
       }).then(canvas => {
