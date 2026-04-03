@@ -1155,7 +1155,8 @@ body {
   .product-logo { flex-direction: column; text-align: center; }
   .logo-text-wrap { align-items: center; }
   .guarantee-block { flex-direction: column; text-align: center; }
-  .cta-button { width: 90%; font-size: 14px; padding: 18px 24px; }
+  .cta-button { width: 90%; font-size: 14px; padding: 18px 24px; animation: pulse 2s ease-in-out infinite; }
+  .price-value { font-size: 64px; }
   .fixed-header { display: none; }
   body { padding-top: 0; }
 }
