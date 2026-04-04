@@ -224,8 +224,6 @@
       font-weight: 500;
       letter-spacing: 0.6px;
       text-transform: uppercase;
-      max-width: 320px;
-      text-align: center;
     }
 
     .subheadline-up {
@@ -545,44 +543,47 @@
 
 .cta-primary {
       display: inline-block;
-      background: linear-gradient(140deg, var(--green-primary) 0%, #34d399 100%);
-      color: #06060a;
+      background: linear-gradient(135deg, #0d9488 0%, #115e59 50%, #14b8a6 100%);
+      color: #f0fdfa;
       font-size: 20px;
       font-weight: 700;
       padding: 26px 58px;
-      border-radius: 12px;
+      border-radius: 6px;
       text-decoration: none;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 
-        0 16px 45px rgba(74,222,128,0.35),
-        0 0 0 1px rgba(74,222,128,0.1);
+        0 0 30px rgba(16, 185, 129, 0.15),
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(74, 222, 128, 0.4),
+        inset 0 1px 0 rgba(255,255,255,0.15),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
       border: none;
       cursor: pointer;
-      letter-spacing: 0.4px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
       animation: pulse-cta 1.5s ease-in-out infinite;
     }
 
     @keyframes pulse-cta {
       0%, 100% {
-        box-shadow: 
-          0 16px 45px rgba(74,222,128,0.4),
-          0 0 0 2px rgba(74,222,128,0.15);
+        box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
         transform: scale(1);
       }
       50% {
-        box-shadow: 
-          0 20px 70px rgba(74,222,128,0.7),
-          0 0 0 4px rgba(74,222,128,0.3),
-          0 0 40px rgba(74,222,128,0.5);
-        transform: scale(1.03);
+        box-shadow: 0 0 60px rgba(16, 185, 129, 0.5), 0 0 100px rgba(16, 185, 129, 0.3);
+        transform: scale(1.05);
       }
     }
 
     .cta-primary:hover {
-      transform: translateY(-4px) scale(1.02);
+      background: linear-gradient(135deg, #0f766e 0%, #115e59 50%, #14b8a6 100%);
+      transform: scale(1.02);
       box-shadow: 
-        0 22px 55px rgba(74,222,128,0.45),
-        0 0 0 1px rgba(74,222,128,0.15);
+        0 0 40px rgba(16, 185, 129, 0.25),
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(74, 222, 128, 0.5),
+        inset 0 1px 0 rgba(255,255,255,0.2),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.15);
       animation: none;
     }
 
@@ -619,14 +620,6 @@
           inset 0 0 30px rgba(74,222,128,0.1);
         transform: scale(1.08);
       }
-    }
-
-    .cta-primary:hover {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 
-        0 22px 55px rgba(74,222,128,0.45),
-        0 0 0 1px rgba(74,222,128,0.15);
-      animation: none;
     }
 
     .cta-sub {
@@ -694,24 +687,41 @@
       line-height: 1.7;
     }
 
-    /* RESPONSIVO - MOBILE FIRST */
-    @media (max-width: 768px) {
-      html, body {
-        width: 100%;
-        overflow-x: hidden;
-      }
-
-      .container {
+      /* Remover container centralizado - ocupa 100% */
+      .hero-up,
+      .testimonials-up,
+      .benefits-up,
+      .offer-up,
+      .footer-up {
         width: 100%;
         max-width: 100%;
-        padding: 0 16px;
-        margin: 0 auto;
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .hero-content,
+      .testimonials-grid,
+      .benefits-header,
+      .benefits-grid,
+      .offer-box,
+      .testimonials-grid,
+      .testi-card,
+      .benefit-card,
+      .subheadline-up,
+      .media-block,
+      .media-frame,
+      .benefit-closing {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
       }
 
       /* BARRA DE URGÊNCIA */
       .urgency-bar {
         padding: 10px 16px;
         position: relative;
+        width: 100%;
+        max-width: 100%;
       }
 
       .urgency-bar span {
@@ -771,8 +781,7 @@
 
       .media-frame {
         width: 100%;
-        max-width: 320px;
-        margin: 0 auto;
+        margin: 0;
         border-radius: 12px;
       }
 
@@ -805,8 +814,7 @@
       .subheadline-up {
         font-size: 15px;
         line-height: 1.65;
-        max-width: 320px;
-        margin: 0 auto;
+        margin: 0;
       }
 
       /* PROVA SOCIAL */
@@ -861,8 +869,7 @@
 
       .benefits-header {
         width: 100%;
-        max-width: 320px;
-        margin: 0 auto 28px;
+        margin: 0 0 28px 0;
       }
 
       .benefits-title {
@@ -914,7 +921,6 @@
         font-size: 15px;
         line-height: 1.5;
         margin-top: 24px;
-        max-width: 320px;
       }
 
       /* OFERTA */
@@ -925,7 +931,6 @@
 
       .offer-box {
         width: 100%;
-        max-width: 320px;
         margin: 0 auto;
       }
 
