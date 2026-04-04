@@ -1072,7 +1072,7 @@ body {
 
 /* FOOTER */
 .footer {
-  background: linear-gradient(to bottom, #F5F6F6 0%, #EEEFEE 100%);
+  background: #FFFFFF;
   border-top: 1px solid rgba(0,0,0,0.06);
   padding: 48px 24px 40px;
   text-align: center;
