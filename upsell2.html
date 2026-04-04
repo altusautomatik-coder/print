@@ -559,20 +559,22 @@
       border: none;
       cursor: pointer;
       letter-spacing: 0.4px;
-      animation: pulse-cta 2s ease-in-out infinite;
+      animation: pulse-cta 1.5s ease-in-out infinite;
     }
 
     @keyframes pulse-cta {
       0%, 100% {
         box-shadow: 
-          0 16px 45px rgba(74,222,128,0.35),
-          0 0 0 1px rgba(74,222,128,0.1);
+          0 16px 45px rgba(74,222,128,0.4),
+          0 0 0 2px rgba(74,222,128,0.15);
+        transform: scale(1);
       }
       50% {
         box-shadow: 
-          0 16px 55px rgba(74,222,128,0.5),
-          0 0 0 2px rgba(74,222,128,0.2),
-          0 0 30px rgba(74,222,128,0.3);
+          0 20px 70px rgba(74,222,128,0.7),
+          0 0 0 4px rgba(74,222,128,0.3),
+          0 0 40px rgba(74,222,128,0.5);
+        transform: scale(1.03);
       }
     }
 
@@ -598,35 +600,24 @@
       box-shadow: 
         0 0 30px rgba(74,222,128,0.15),
         inset 0 0 20px rgba(74,222,128,0.05);
-      animation: pulse-play 2s ease-in-out infinite;
-      animation-delay: 1s;
+      animation: pulse-play 1.5s ease-in-out infinite;
+      animation-delay: 0.75s;
     }
 
     @keyframes pulse-play {
       0%, 100% {
         box-shadow: 
-          0 0 30px rgba(74,222,128,0.15),
+          0 0 30px rgba(74,222,128,0.2),
           inset 0 0 20px rgba(74,222,128,0.05);
+        transform: scale(1);
       }
       50% {
         box-shadow: 
-          0 0 50px rgba(74,222,128,0.25),
-          0 0 20px rgba(74,222,128,0.15),
-          inset 0 0 25px rgba(74,222,128,0.08);
-      }
-    }
-
-    @keyframes pulse-cta {
-      0%, 100% {
-        box-shadow: 
-          0 16px 45px rgba(74,222,128,0.35),
-          0 0 0 1px rgba(74,222,128,0.1);
-      }
-      50% {
-        box-shadow: 
-          0 16px 55px rgba(74,222,128,0.5),
-          0 0 0 2px rgba(74,222,128,0.2),
-          0 0 30px rgba(74,222,128,0.3);
+          0 0 60px rgba(74,222,128,0.5),
+          0 0 25px rgba(74,222,128,0.3),
+          0 0 40px rgba(74,222,128,0.2),
+          inset 0 0 30px rgba(74,222,128,0.1);
+        transform: scale(1.08);
       }
     }
 
