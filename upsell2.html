@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Método Noite Blindada — O Próximo Nível</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #08080c;
+      --black-soft: #0c0c12;
+      --black-card: #101018;
+      --green-primary: #4ade80;
+      --green-secondary: #22d3ee;
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border-subtle: rgba(255,255,255,0.04);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--black);
+      color: var(--text-primary);
+      line-height: 1.65;
+      overflow-x: hidden;
+      min-width: 320px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* BARRA FIXA */
+    .urgency-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(180deg, rgba(10,10,15,0.98) 0%, rgba(8,8,12,0.95) 100%);
+      border-bottom: 1px solid rgba(74,222,128,0.12);
+      padding: 12px 20px;
+      text-align: center;
+      z-index: 1000;
+      backdrop-filter: blur(12px);
+    }
+
+    .urgency-bar span {
+      font-size: 12px;
+      color: var(--green-primary);
+      font-weight: 500;
+      letter-spacing: 0.4px;
+    }
+
+    /* HERO */
+    .hero-up {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 110px 24px 90px;
+      position: relative;
+      background: 
+        radial-gradient(ellipse at 50% 20%, rgba(74,222,128,0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 80%, rgba(34,211,238,0.03) 0%, transparent 40%),
+        var(--black);
+    }
+
+    .hero-content {
+      max-width: 780px;
+      text-align: center;
+    }
+
+    .tag-up {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(74,222,128,0.08) 0%, rgba(34,211,238,0.05) 100%);
+      border: 1px solid rgba(74,222,128,0.18);
+      padding: 10px 22px;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: var(--green-primary);
+      text-transform: uppercase;
+      margin-bottom: 36px;
+      box-shadow: 0 0 20px rgba(74,222,128,0.08);
+    }
+
+    .headline-up {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(38px, 7vw, 60px);
+      font-weight: 600;
+      line-height: 1.15;
+      margin-bottom: 32px;
+      color: var(--text-primary);
+      letter-spacing: -0.8px;
+      text-shadow: 0 0 80px rgba(74,222,128,0.1);
+    }
+
+    .headline-up .highlight {
+      background: linear-gradient(135deg, var(--green-primary) 0%, #6ee7b7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* VÍDEO */
+    .media-block {
+      margin: 48px auto 40px;
+      max-width: 620px;
+    }
+
+    .media-frame {
+      position: relative;
+      padding-bottom: 56.25%;
+      background: linear-gradient(160deg, #0f0f18 0%, #08080c 50%, #050508 100%);
+      border: 1px solid rgba(74,222,128,0.08);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 
+        0 50px 100px rgba(0,0,0,0.6),
+        0 0 80px rgba(74,222,128,0.03),
+        inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+
+    .media-frame::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--green-primary) 50%, transparent 100%);
+      opacity: 0.5;
+    }
+
+    .media-frame::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      box-shadow: inset 0 0 50px rgba(74,222,128,0.02);
+      pointer-events: none;
+    }
+
+    .media-placeholder {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      cursor: pointer;
+    }
+
+    .play-btn {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, rgba(74,222,128,0.1) 0%, rgba(34,211,238,0.06) 100%);
+      border: 2px solid rgba(74,222,128,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 
+        0 0 30px rgba(74,222,128,0.15),
+        inset 0 0 20px rgba(74,222,128,0.05);
+    }
+
+    .play-btn:hover {
+      background: linear-gradient(145deg, rgba(74,222,128,0.18) 0%, rgba(34,211,238,0.12) 100%);
+      border-color: rgba(74,222,128,0.4);
+      transform: scale(1.1);
+      box-shadow: 
+        0 0 50px rgba(74,222,128,0.3),
+        inset 0 0 30px rgba(74,222,128,0.1);
+    }
+
+    .play-btn svg {
+      width: 30px;
+      height: 30px;
+      fill: var(--green-primary);
+      margin-left: 4px;
+      filter: drop-shadow(0 0 10px rgba(74,222,128,0.4));
+    }
+
+    .media-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      max-width: 320px;
+      text-align: center;
+    }
+
+    .subheadline-up {
+      font-size: 17px;
+      color: var(--text-secondary);
+      max-width: 580px;
+      margin: 0 auto;
+      line-height: 1.75;
+    }
+
+    .subheadline-up strong {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* PROVA SOCIAL */
+    .testimonials-up {
+      padding: 90px 24px;
+      background: var(--black-soft);
+      position: relative;
+    }
+
+    .testimonials-up::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(74,222,128,0.15) 50%, transparent 100%);
+    }
+
+    .section-title {
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 34px;
+      font-weight: 600;
+      margin-bottom: 56px;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .testi-card {
+      position: relative;
+      background: linear-gradient(170deg, #12121a 0%, #0c0c14 100%);
+      border: 1px solid rgba(255,255,255,0.03);
+      border-radius: 20px;
+      padding: 30px;
+      transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    }
+
+    .testi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 30px;
+      right: 30px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(74,222,128,0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .testi-card:hover {
+      border-color: rgba(74,222,128,0.08);
+      transform: translateY(-6px);
+      box-shadow: 
+        0 30px 60px rgba(0,0,0,0.4),
+        0 0 50px rgba(74,222,128,0.04);
+    }
+
+    .testi-card:hover::before {
+      opacity: 1;
+    }
+
+    .testi-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .testi-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(74,222,128,0.5);
+      box-shadow: 0 0 20px rgba(74,222,128,0.15);
+    }
+
+    .testi-meta strong {
+      display: block;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .testi-meta span {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .testi-text {
+      font-size: 14.5px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      font-style: italic;
+    }
+
+    .testi-text::before {
+      content: '"';
+      font-size: 22px;
+      color: var(--green-primary);
+      font-family: 'Cormorant Garamond', serif;
+      line-height: 0;
+      margin-right: 4px;
+      opacity: 0.6;
+    }
+
+    /* BENEFÍCIOS */
+    .benefits-up {
+      padding: 110px 24px;
+      background: var(--black);
+      position: relative;
+    }
+
+    .benefits-up::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(74,222,128,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .benefits-header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 56px;
+    }
+
+    .benefits-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 600;
+      margin-bottom: 18px;
+      line-height: 1.3;
+    }
+
+    .benefits-desc {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .benefit-card {
+      background: linear-gradient(165deg, var(--black-card) 0%, rgba(12,12,18,0.9) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 28px 24px;
+      text-align: center;
+      transition: all 0.4s ease;
+    }
+
+    .benefit-card:hover {
+      border-color: rgba(74,222,128,0.1);
+      box-shadow: 0 0 40px rgba(74,222,128,0.06);
+    }
+
+    .benefit-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 18px;
+      background: rgba(74,222,128,0.08);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(74,222,128,0.12);
+    }
+
+    .benefit-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: var(--green-primary);
+      fill: none;
+      stroke-width: 1.5;
+    }
+
+    .benefit-card h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .benefit-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .benefit-closing {
+      text-align: center;
+      max-width: 500px;
+      margin: 48px auto 0;
+      font-size: 17px;
+      color: var(--text-secondary);
+      font-style: italic;
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    /* OFERTA */
+    .offer-up {
+      padding: 120px 24px;
+      background: 
+        radial-gradient(ellipse at 50% 0%, rgba(74,222,128,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 50%, rgba(34,211,238,0.04) 0%, transparent 40%),
+        linear-gradient(180deg, var(--black) 0%, #06060a 100%);
+      position: relative;
+    }
+
+    .offer-up::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--green-primary) 50%, transparent 100%);
+    }
+
+    .offer-box {
+      max-width: 500px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .offer-label {
+      display: inline-block;
+      background: rgba(74,222,128,0.06);
+      border: 1px solid rgba(74,222,128,0.12);
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      color: var(--green-primary);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .offer-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 44px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -0.8px;
+    }
+
+    .offer-desc {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 44px;
+      line-height: 1.7;
+    }
+
+    .price-display {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 36px;
+    }
+
+    .price-curr {
+      font-size: 26px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .price-num {
+      font-size: 76px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--green-primary) 0%, #6ee7b7 50%, var(--green-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      letter-spacing: -3px;
+      text-shadow: 0 0 60px rgba(74,222,128,0.5);
+    }
+
+    .price-note {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+    }
+
+    .cta-primary {
+      display: inline-block;
+      background: linear-gradient(140deg, var(--green-primary) 0%, #34d399 100%);
+      color: #06060a;
+      font-size: 20px;
+      font-weight: 700;
+      padding: 26px 58px;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 
+        0 16px 45px rgba(74,222,128,0.35),
+        0 0 0 1px rgba(74,222,128,0.1);
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.4px;
+    }
+
+    .cta-primary:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 
+        0 22px 55px rgba(74,222,128,0.45),
+        0 0 0 1px rgba(74,222,128,0.15);
+    }
+
+    .cta-sub {
+      display: block;
+      margin-top: 18px;
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+
+    .downsell-area {
+      margin-top: 50px;
+      padding-top: 36px;
+      border-top: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .downsell-link {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.04);
+      color: var(--text-muted);
+      font-size: 13px;
+      padding: 14px 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.35s ease;
+      text-decoration: none;
+      display: inline-block;
+      font-weight: 500;
+    }
+
+    .downsell-link:hover {
+      border-color: rgba(255,255,255,0.1);
+      color: var(--text-secondary);
+      background: rgba(255,255,255,0.01);
+    }
+
+    .guarantee-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 32px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .guarantee-row svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--green-primary);
+      flex-shrink: 0;
+    }
+
+    /* FOOTER */
+    .footer-up {
+      padding: 36px 24px;
+      text-align: center;
+      background: var(--black-soft);
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .footer-up p {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* RESPONSIVO - MOBILE FIRST */
+    @media (max-width: 768px) {
+      html, body {
+        width: 100%;
+        overflow-x: hidden;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 100%;
+        padding: 0 16px;
+        margin: 0 auto;
+      }
+
+      /* BARRA DE URGÊNCIA */
+      .urgency-bar {
+        padding: 10px 16px;
+        position: relative;
+      }
+
+      .urgency-bar span {
+        font-size: 11px;
+        font-weight: 500;
+        line-height: 1.4;
+        color: var(--green-primary);
+        display: block;
+        text-align: center;
+      }
+
+      /* HERO */
+      .hero-up {
+        padding: 60px 16px 40px;
+        min-height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+      }
+
+      .hero-content {
+        width: 100%;
+        max-width: 100%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .tag-up {
+        font-size: 9px;
+        padding: 6px 14px;
+        margin-bottom: 18px;
+        letter-spacing: 1.5px;
+      }
+
+      .headline-up {
+        font-size: 26px;
+        line-height: 1.3;
+        margin-bottom: 16px;
+        letter-spacing: -0.3px;
+        width: 100%;
+      }
+
+      .headline-up .highlight {
+        display: inline;
+      }
+
+      /* ÁREA DE VÍDEO */
+      .media-block {
+        width: 100%;
+        max-width: 100%;
+        margin: 20px auto;
+        padding: 0;
+      }
+
+      .media-frame {
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
+        border-radius: 12px;
+      }
+
+      .media-placeholder {
+        padding: 40px 20px;
+        gap: 14px;
+      }
+
+      .play-btn {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .play-btn svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .media-label {
+        font-size: 12px;
+        line-height: 1.4;
+        text-align: center;
+        max-width: 240px;
+      }
+
+      .subheadline-up {
+        font-size: 15px;
+        line-height: 1.65;
+        max-width: 320px;
+        margin: 0 auto;
+      }
+
+      /* PROVA SOCIAL */
+      .testimonials-up {
+        padding: 40px 16px;
+        width: 100%;
+      }
+
+      .section-title {
+        font-size: 22px;
+        margin-bottom: 24px;
+        line-height: 1.3;
+      }
+
+      .testimonials-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        width: 100%;
+      }
+
+      .testi-card {
+        width: 100%;
+        padding: 18px;
+        border-radius: 14px;
+      }
+
+      .testi-header {
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .testi-avatar {
+        width: 40px;
+        height: 40px;
+      }
+
+      .testi-meta strong {
+        font-size: 14px;
+      }
+
+      .testi-text {
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      /* BENEFÍCIOS */
+      .benefits-up {
+        padding: 40px 16px;
+        width: 100%;
+      }
+
+      .benefits-header {
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto 28px;
+      }
+
+      .benefits-title {
+        font-size: 20px;
+        line-height: 1.35;
+        margin-bottom: 12px;
+      }
+
+      .benefits-desc {
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .benefits-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+      }
+
+      .benefit-card {
+        width: 100%;
+        padding: 18px;
+        border-radius: 14px;
+      }
+
+      .benefit-icon {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 12px;
+      }
+
+      .benefit-icon svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .benefit-card h3 {
+        font-size: 15px;
+        margin-bottom: 6px;
+      }
+
+      .benefit-card p {
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      .benefit-closing {
+        font-size: 15px;
+        line-height: 1.5;
+        margin-top: 24px;
+        max-width: 320px;
+      }
+
+      /* OFERTA */
+      .offer-up {
+        padding: 40px 16px;
+        width: 100%;
+      }
+
+      .offer-box {
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
+      }
+
+      .offer-label {
+        font-size: 10px;
+        padding: 6px 14px;
+        margin-bottom: 14px;
+      }
+
+      .offer-heading {
+        font-size: 24px;
+        line-height: 1.3;
+        margin-bottom: 10px;
+      }
+
+      .offer-desc {
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 20px;
+      }
+
+      .price-display {
+        margin-bottom: 18px;
+      }
+
+      .price-curr {
+        font-size: 20px;
+      }
+
+      .price-num {
+        font-size: 48px;
+      }
+
+      .price-note {
+        font-size: 11px;
+        margin-bottom: 20px;
+      }
+
+      .cta-primary {
+        width: 100%;
+        max-width: 100%;
+        padding: 18px 24px;
+        font-size: 16px;
+        border-radius: 14px;
+        display: block;
+      }
+
+      .cta-sub {
+        font-size: 11px;
+        margin-top: 12px;
+      }
+
+      .downsell-area {
+        margin-top: 24px;
+        padding-top: 20px;
+      }
+
+      .downsell-link {
+        font-size: 13px;
+        padding: 12px 24px;
+        border-radius: 10px;
+      }
+
+      .guarantee-row {
+        font-size: 11px;
+        margin-top: 18px;
+        gap: 8px;
+      }
+
+      .guarantee-row svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+
+      /* FOOTER */
+      .footer-up {
+        padding: 24px 16px;
+        width: 100%;
+      }
+
+      .footer-up p {
+        font-size: 10px;
+        line-height: 1.5;
+      }
+    }
+
+    /* Extra small screens */
+    @media (max-width: 360px) {
+      .container {
+        padding: 0 14px;
+      }
+
+      .headline-up {
+        font-size: 22px;
+      }
+
+      .offer-heading {
+        font-size: 20px;
+      }
+
+      .price-num {
+        font-size: 40px;
+      }
+    }
+
+    /* ANIMAÇÕES */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(35px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(35px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+  <!-- BARRA DE URGÊNCIA -->
+  <div class="urgency-bar">
+    <span>Oferta exclusiva disponível apenas nesta etapa. Ao sair desta página, esta condição pode não voltar.</span>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero-up">
+    <div class="hero-content">
+      <span class="tag-up reveal">Aprofundamento do Protocolo</span>
+      <h1 class="headline-up reveal">Você já deu o primeiro passo.<br/><span class="highlight">Agora é hora de parar de repetir o mesmo padrão noite após noite.</span></h1>
+
+      <!-- ÁREA DE VÍDEO -->
+      <div class="media-block reveal">
+        <div class="media-frame">
+          <div class="media-placeholder">
+            <div class="play-btn">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <span class="media-label">Assista ou veja como funciona o próximo passo da sua proteção noturna</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="subheadline-up reveal">O Método Noite Blindada é o aprofundamento para quem quer reduzir o alerta recorrente, evitar despertares em espiral e reconstruir a relação com a noite com mais constância, previsibilidade e segurança interna.</p>
+    </div>
+  </section>
+
+  <!-- PROVA SOCIAL -->
+  <section class="testimonials-up">
+    <h2 class="section-title reveal">Quem já entrou no próximo nível</h2>
+    <div class="testimonials-grid">
+      <div class="testi-card reveal">
+        <div class="testi-header">
+          <img src="new.jpeg" alt="Juliana" class="testi-avatar" />
+          <div class="testi-meta">
+            <strong>Juliana, 34 anos</strong>
+          </div>
+        </div>
+        <p class="testi-text">Antes eu só tentava sobreviver à noite. Com o método, senti que comecei a ter um caminho para não entrar mais em batalha toda vez que deitava.</p>
+      </div>
+
+      <div class="testi-card reveal">
+        <div class="testi-header">
+          <img src="new2.jpeg" alt="Rafael" class="testi-avatar" />
+          <div class="testi-meta">
+            <strong>Rafael, 41 anos</strong>
+          </div>
+        </div>
+        <p class="testi-text">O que mudou para mim não foi só pegar no sono. Foi parar de viver com medo da madrugada e da minha própria cabeça acelerar de novo.</p>
+      </div>
+
+      <div class="testi-card reveal">
+        <div class="testi-header">
+          <img src="newavatar3.jpeg" alt="Camila" class="testi-avatar" />
+          <div class="testi-meta">
+            <strong>Camila, 28 anos</strong>
+          </div>
+        </div>
+        <p class="testi-text">Eu já tinha tenido algum alívio antes, mas ainda sentia que o problema podia voltar a qualquer noite. Esse método me deu sensação de estrutura e continuidade.</p>
+      </div>
+
+      <div class="testi-card reveal">
+        <div class="testi-header">
+          <img src="new.jpeg" alt="Mariana" class="testi-avatar" />
+          <div class="testi-meta">
+            <strong>Mariana, 37 anos</strong>
+          </div>
+        </div>
+        <p class="testi-text">Passei a entender melhor meus gatilhos e, principalmente, o que fazer antes que a noite saísse do controle. Isso trouxe uma paz que eu não sentia há muito tempo.</p>
+      </div>
+
+      <div class="testi-card reveal">
+        <div class="testi-header">
+          <img src="new2.jpeg" alt="Lucas" class="testi-avatar" />
+          <div class="testi-meta">
+            <strong>Lucas, 39 anos</strong>
+          </div>
+        </div>
+        <p class="testi-text">Eu queria mais do que um recurso para uma noite ruim. Queria parar de repetir o mesmo padrão. Foi isso que me fez entrar no Método Noite Blindada.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFÍCIOS -->
+  <section class="benefits-up">
+    <div class="benefits-header reveal">
+      <h2 class="benefits-title">O próximo passo não é dormir mais cedo. É parar de deixar a noite te desmontar.</h2>
+      <p class="benefits-desc">O Método Noite Blindada foi criado para quem não quer depender só de alívio pontual. Ele é para quem quer construir uma relação mais estável com a noite, com menos alerta, menos medo da madrugada e mais previsibilidade emocional ao deitar.</p>
+    </div>
+    <div class="benefits-grid">
+      <div class="benefit-card reveal">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Menos alerta recorrente</h3>
+        <p>Sua mente para de entrar em modo de vigilância quando a luz apaga.</p>
+      </div>
+
+      <div class="benefit-card reveal">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3>Menos despertares</h3>
+        <p>Acorda menos vezes ou volta a dormir sem entrar em espiral.</p>
+      </div>
+
+      <div class="benefit-card reveal">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 3v1m0 16v1M4.22 4.22l.7.7m12.72 12.72.7.7M3 12H4m16 0h1M4.22 19.78l.7-.7M18.36 5.64l.7-.7"/><circle cx="12" cy="12" r="4"/></svg>
+        </div>
+        <h3>Mais previsibilidade</h3>
+        <p>Noites mais estáveis, mesmo em dias emocionalmente mais pesados.</p>
+      </div>
+
+      <div class="benefit-card reveal">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <h3>Mais segurança interna</h3>
+        <p>Você deita sabendo que sua mente não vai te trair durante a noite.</p>
+      </div>
+    </div>
+    <p class="benefit-closing reveal">Você não precisa continuar começando toda noite do zero.</p>
+  </section>
+
+  <!-- OFERTA -->
+  <section class="offer-up">
+    <div class="offer-box reveal">
+      <span class="offer-label">Acesso Limitado</span>
+      <h2 class="offer-heading">Leve agora o Método Noite Blindada</h2>
+      <p class="offer-desc">Um plano guiado para reorganizar sua relação com a noite de forma mais profunda e consistente.</p>
+
+      <div class="price-display">
+        <span class="price-curr">R$</span>
+        <span class="price-num">27,80</span>
+      </div>
+
+      <p class="price-note">Acesso imediato · Pagamento único · Sem assinatura</p>
+
+      <a href="#" class="cta-primary">Quero blindar minhas noites agora</a>
+      <p class="cta-sub">Pagamento único · Sem mensalidades</p>
+
+      <div class="downsell-area">
+        <a href="#" class="downsell-link">Não quero essa opção</a>
+      </div>
+
+      <div class="guarantee-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>Garantia de 7 dias — reembolso sem perguntas</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer-up">
+    <p>© 2026 Método Noite Blindada · Todos os direitos reservados</p>
+    <p>Este produto é material educativo. Não substitui acompanhamento médico.</p>
+  </footer>
+
+  </div>
+
+  <script>
+    // Reveal animation
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
