@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Método Noite Blindada — O Próximo Nível</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,6 +28,8 @@
 
     html {
       scroll-behavior: smooth;
+      width: 100%;
+      max-width: 100%;
     }
 
     body {
@@ -36,13 +38,21 @@
       color: var(--text-primary);
       line-height: 1.65;
       overflow-x: hidden;
-      min-width: 320px;
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      -webkit-overflow-scrolling: touch;
+      -webkit-text-size-adjust: 100%;
+      -moz-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
     }
 
     /* BARRA FIXA */
@@ -687,41 +697,102 @@
       line-height: 1.7;
     }
 
-      /* Remover container centralizado - ocupa 100% */
+    /* RESPONSIVO - MOBILE FIRST */
+    @media (max-width: 768px) {
+      /* Reset absoluto para garantir 100% */
+      *, *::before, *::after {
+        max-width: none !important;
+      }
+
+      html, body {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      /* Container principal - ocupa 100% */
+      .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 16px !important;
+      }
+
+      /* Todas as seções - ocupam 100% */
       .hero-up,
       .testimonials-up,
       .benefits-up,
       .offer-up,
-      .footer-up {
-        width: 100%;
-        max-width: 100%;
-        padding-left: 16px;
-        padding-right: 16px;
+      .footer-up,
+      .urgency-bar {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+        box-sizing: border-box !important;
       }
 
+      /* Todos os elementos internos */
       .hero-content,
-      .testimonials-grid,
-      .benefits-header,
-      .benefits-grid,
-      .offer-box,
-      .testimonials-grid,
-      .testi-card,
-      .benefit-card,
+      .tag-up,
+      .headline-up,
       .subheadline-up,
       .media-block,
       .media-frame,
-      .benefit-closing {
-        width: 100%;
-        max-width: 100%;
-        margin: 0;
+      .media-placeholder,
+      .section-title,
+      .testimonials-grid,
+      .testi-card,
+      .testi-header,
+      .testi-text,
+      .benefits-header,
+      .benefits-title,
+      .benefits-desc,
+      .benefits-grid,
+      .benefit-card,
+      .benefit-closing,
+      .offer-box,
+      .offer-label,
+      .offer-heading,
+      .offer-desc,
+      .price-display,
+      .cta-primary,
+      .cta-sub,
+      .downsell-area,
+      .downsell-link,
+      .guarantee-row {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        box-sizing: border-box !important;
       }
 
-      /* BARRA DE URGÊNCIA */
+      /* Centralizar apenas textos se necessário */
+      .hero-content,
+      .offer-box,
+      .benefits-header {
+        text-align: center;
+      }
+
+      /* Remover centrações */
+      .media-frame,
+      .testi-card,
+      .benefit-card,
+      .offer-box,
+      .benefits-header {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+
       .urgency-bar {
-        padding: 10px 16px;
+        padding: 10px 16px !important;
         position: relative;
-        width: 100%;
-        max-width: 100%;
       }
 
       .urgency-bar span {
@@ -730,7 +801,6 @@
         line-height: 1.4;
         color: var(--green-primary);
         display: block;
-        text-align: center;
       }
 
       /* HERO */
@@ -808,7 +878,6 @@
         font-size: 12px;
         line-height: 1.4;
         text-align: center;
-        max-width: 240px;
       }
 
       .subheadline-up {
@@ -1249,6 +1318,35 @@
           target.scrollIntoView({ behavior: 'smooth' });
         }
       });
+    });
+
+    // Prevenir zoom e scroll lateral no mobile
+    document.addEventListener('touchmove', function(e) {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    var lastTouchEnd = 0;
+    document.addEventListener('touchend', function(e) {
+      var now = Date.now();
+      if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
+
+    // Prevenir gestos de zoom
+    document.addEventListener('gesturestart', function(e) {
+      e.preventDefault();
+    });
+
+    document.addEventListener('gesturechange', function(e) {
+      e.preventDefault();
+    });
+
+    document.addEventListener('gestureend', function(e) {
+      e.preventDefault();
     });
   </script>
 

@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Método Noite Blindada — O Próximo Passo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #0a0a0f;
+      --black-soft: #0d0d14;
+      --black-card: #12121a;
+      --green-primary: #4ade80;
+      --green-secondary: #22d3ee;
+      --green-glow: rgba(74, 222, 128, 0.15);
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border-subtle: rgba(255,255,255,0.06);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--black);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* BARRA FIXA DE URGÊNCIA */
+    .urgency-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(90deg, rgba(74,222,128,0.1) 0%, rgba(34,211,238,0.08) 100%);
+      border-bottom: 1px solid rgba(74,222,128,0.2);
+      padding: 10px 20px;
+      text-align: center;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+
+    .urgency-bar span {
+      font-size: 13px;
+      color: var(--green-primary);
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+
+    /* HERO SECTION */
+    .hero-upsell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 24px 80px;
+      position: relative;
+      background: 
+        radial-gradient(ellipse at 50% 0%, rgba(74,222,128,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 50%, rgba(34,211,238,0.05) 0%, transparent 40%),
+        var(--black);
+    }
+
+    .hero-upsell::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(74,222,128,0.01) 2px,
+          rgba(74,222,128,0.01) 4px
+        );
+      pointer-events: none;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      text-align: center;
+    }
+
+    .tag-premium {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(74,222,128,0.15) 0%, rgba(34,211,238,0.1) 100%);
+      border: 1px solid rgba(74,222,128,0.3);
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      color: var(--green-primary);
+      text-transform: uppercase;
+      margin-bottom: 30px;
+    }
+
+    .headline-upsell {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(38px, 7vw, 64px);
+      font-weight: 600;
+      line-height: 1.1;
+      margin-bottom: 36px;
+      letter-spacing: -1px;
+      background: linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.7) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 60px rgba(74,222,128,0.15);
+    }
+
+    .headline-upsell .highlight {
+      background: linear-gradient(135deg, var(--green-primary) 0%, var(--green-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* VÍDEO/IMAGEM PLACEHOLDER */
+    .video-container {
+      margin: 48px auto;
+      max-width: 680px;
+      position: relative;
+    }
+
+    .video-frame {
+      position: relative;
+      padding-bottom: 56.25%;
+      background: linear-gradient(145deg, #15151f 0%, #0d0d14 50%, #08080c 100%);
+      border: 1px solid rgba(74,222,128,0.15);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 
+        0 0 80px rgba(74,222,128,0.06),
+        0 25px 50px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .video-frame::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--green-primary) 50%, transparent 100%);
+      opacity: 0.5;
+    }
+
+    .video-frame::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      box-shadow: inset 0 0 60px rgba(74,222,128,0.03);
+      pointer-events: none;
+    }
+
+    .video-placeholder {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .video-placeholder-icon {
+      width: 80px;
+      height: 80px;
+      border: 2px solid var(--green-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(135deg, rgba(74,222,128,0.15) 0%, rgba(34,211,238,0.1) 100%);
+      box-shadow: 
+        0 0 30px rgba(74,222,128,0.2),
+        inset 0 0 20px rgba(74,222,128,0.1);
+    }
+
+    .video-placeholder-icon:hover {
+      background: linear-gradient(135deg, rgba(74,222,128,0.25) 0%, rgba(34,211,238,0.2) 100%);
+      transform: scale(1.08);
+      box-shadow: 
+        0 0 50px rgba(74,222,128,0.35),
+        inset 0 0 30px rgba(74,222,128,0.15);
+    }
+
+    .video-placeholder-icon svg {
+      width: 32px;
+      height: 32px;
+      fill: var(--green-primary);
+      margin-left: 5px;
+      filter: drop-shadow(0 0 8px rgba(74,222,128,0.4));
+    }
+
+    .video-placeholder-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .subheadline-upsell {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 60px;
+      line-height: 1.7;
+    }
+
+    .subheadline-upsell strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    /* PROVA SOCIAL */
+    .testimonials-upsell {
+      padding: 80px 24px;
+      background: var(--black-soft);
+      position: relative;
+    }
+
+    .testimonials-upsell::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(74,222,128,0.2), transparent);
+    }
+
+    .section-title-center {
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      margin-bottom: 50px;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .testi-card-up {
+      background: linear-gradient(145deg, #16161f 0%, #101018 100%);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 20px;
+      padding: 32px;
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .testi-card-up::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 20px;
+      right: 20px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(74,222,128,0.15), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .testi-card-up:hover {
+      border-color: rgba(74,222,128,0.15);
+      transform: translateY(-6px);
+      box-shadow: 
+        0 25px 50px rgba(0,0,0,0.4),
+        0 0 40px rgba(74,222,128,0.05);
+    }
+
+    .testi-card-up:hover::before {
+      opacity: 1;
+    }
+
+    .testi-header-up {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .testi-avatar-up {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--green-primary);
+      box-shadow: 0 0 20px rgba(74,222,128,0.2);
+    }
+
+    .testi-meta-up strong {
+      display: block;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .testi-meta-up span {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .testi-stars-up {
+      color: #fbbf24;
+      font-size: 14px;
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+
+    .testi-text-up {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      font-style: italic;
+    }
+
+    .testi-text-up::before {
+      content: '"';
+      font-size: 28px;
+      color: var(--green-primary);
+      font-family: 'Playfair Display', serif;
+      line-height: 0;
+      margin-right: 6px;
+      opacity: 0.6;
+    }
+
+    /* BENEFÍCIOS */
+    .benefits-upsell {
+      padding: 100px 24px;
+      background: var(--black);
+      position: relative;
+    }
+
+    .benefits-upsell::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(74,222,128,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .benefits-title {
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    .benefits-subtitle {
+      text-align: center;
+      font-size: 17px;
+      color: var(--text-secondary);
+      margin-bottom: 60px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .benefit-card {
+      background: linear-gradient(135deg, var(--black-card) 0%, rgba(18,18,26,0.8) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .benefit-card:hover {
+      border-color: rgba(74,222,128,0.25);
+      box-shadow: 0 0 40px rgba(74,222,128,0.1);
+    }
+
+    .benefit-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, rgba(74,222,128,0.15) 0%, rgba(34,211,238,0.1) 100%);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(74,222,128,0.2);
+    }
+
+    .benefit-icon svg {
+      width: 26px;
+      height: 26px;
+      stroke: var(--green-primary);
+      fill: none;
+      stroke-width: 1.5;
+    }
+
+    .benefit-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+    }
+
+    .benefit-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* OFERTA FINAL */
+    .offer-upsell {
+      padding: 120px 24px;
+      background: 
+        radial-gradient(ellipse at 50% 0%, rgba(74,222,128,0.08) 0%, transparent 50%),
+        linear-gradient(180deg, var(--black) 0%, #0a0a10 100%);
+      position: relative;
+    }
+
+    .offer-upsell::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--green-primary) 50%, transparent 100%);
+    }
+
+    .offer-container {
+      max-width: 560px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .offer-label {
+      display: inline-block;
+      font-size: 12px;
+      color: var(--green-primary);
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      padding: 8px 20px;
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.2);
+      border-radius: 30px;
+    }
+
+    .offer-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 44px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .offer-subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      margin-bottom: 48px;
+      line-height: 1.6;
+    }
+
+    .price-block {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 40px;
+    }
+
+    .price-currency {
+      font-size: 28px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .price-value {
+      font-size: 72px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--green-primary) 0%, #34d399 50%, var(--green-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      letter-spacing: -2px;
+      text-shadow: 0 0 60px rgba(74,222,128,0.4);
+    }
+
+    .cta-main {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--green-primary) 0%, #34d399 100%);
+      color: #0a0a0f;
+      font-size: 20px;
+      font-weight: 700;
+      padding: 24px 60px;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 
+        0 15px 40px rgba(74,222,128,0.35),
+        0 0 0 1px rgba(74,222,128,0.1);
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+    }
+
+    .cta-main:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 
+        0 20px 50px rgba(74,222,128,0.45),
+        0 0 0 1px rgba(74,222,128,0.2);
+    }
+
+    .cta-sub {
+      display: block;
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+
+    .downsell-wrap {
+      margin-top: 50px;
+      padding-top: 36px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .downsell-btn {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text-muted);
+      font-size: 14px;
+      padding: 14px 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      font-weight: 500;
+    }
+
+    .downsell-btn:hover {
+      border-color: rgba(255,255,255,0.15);
+      color: var(--text-secondary);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .guarantee-mini {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 36px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .guarantee-mini svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--green-primary);
+      flex-shrink: 0;
+    }
+
+    /* FOOTER */
+    .footer-upsell {
+      padding: 40px 24px;
+      text-align: center;
+      background: var(--black-soft);
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .footer-upsell p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* RESPONSIVO */
+    @media (max-width: 768px) {
+      .urgency-bar span {
+        font-size: 12px;
+      }
+
+      .hero-upsell {
+        padding: 90px 20px 60px;
+      }
+
+      .headline-upsell {
+        font-size: 32px;
+      }
+
+      .subheadline-upsell {
+        font-size: 16px;
+      }
+
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .testi-card-up {
+        padding: 22px;
+      }
+
+      .benefits-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .offer-title {
+        font-size: 32px;
+      }
+
+      .price-value {
+        font-size: 48px;
+      }
+
+      .cta-main {
+        padding: 18px 40px;
+        font-size: 16px;
+      }
+    }
+
+    /* ANIMAÇÕES */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-in {
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA DE URGÊNCIA -->
+  <div class="urgency-bar">
+    <span>Oferta especial disponível apenas nesta etapa</span>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero-upsell">
+    <div class="hero-content">
+      <span class="tag-premium animate-in">Próximo Passo do Protocolo</span>
+      <h1 class="headline-upsell animate-in delay-1">
+        Não é só dormir.<br/>
+        É <span class="highlight">blindar sua noite.</span>
+      </h1>
+
+      <!-- VÍDEO/IMAGEM -->
+      <div class="video-container animate-in delay-2">
+        <div class="video-frame">
+          <div class="video-placeholder">
+            <div class="video-placeholder-icon">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <span class="video-placeholder-text">Assista à apresentação</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="subheadline-upsell animate-in delay-3">
+        Você já deu o primeiro passo com o Protocolo Anti-Madrugada.<br/>
+        <strong>Agora é hora de reorganizar sua relação com a noite de forma mais profunda</strong> — criando noites previsíveis, seguras e sem a segunda jornada mental que te acorda às 3h.
+      </p>
+    </div>
+  </section>
+
+  <!-- PROVA SOCIAL -->
+  <section class="testimonials-upsell">
+    <h2 class="section-title-center animate-in">Quem já passou do medo para o controle</h2>
+    <div class="testimonials-grid">
+      <div class="testi-card-up animate-in delay-1">
+        <div class="testi-header-up">
+          <img src="new.jpeg" alt="Juliana M." class="testi-avatar-up" />
+          <div class="testi-meta-up">
+            <strong>Juliana M.</strong>
+            <span>Designer, São Paulo</span>
+          </div>
+        </div>
+        <div class="testi-stars-up">★★★★★</div>
+        <p class="testi-text-up">Acordava às 3h todos os dias com o coração disparado. Hoje a noite passaram de inimiga para algo que eu controlo. É uma sensação de keamanan que nunca senti antes.</p>
+      </div>
+
+      <div class="testi-card-up animate-in delay-2">
+        <div class="testi-header-up">
+          <img src="new2.jpeg" alt="Rodrigo S." class="testi-avatar-up" />
+          <div class="testi-meta-up">
+            <strong>Rodrigo S.</strong>
+            <span>Analista, BH</span>
+          </div>
+        </div>
+        <div class="testi-stars-up">★★★★★</div>
+        <p class="testi-text-up">Tinha medo de dormir porque sabia que ia acordar no meio da noite e ficar girando. Agora deito com outra energia. O método criou uma estrutura que minha mente reconhece como sinal de segurança.</p>
+      </div>
+
+      <div class="testi-card-up animate-in delay-3">
+        <div class="testi-header-up">
+          <img src="newavatar3.jpeg" alt="Camila R." class="testi-avatar-up" />
+          <div class="testi-meta-up">
+            <strong>Camila R.</strong>
+            <span>Professora, Recife</span>
+          </div>
+        </div>
+        <div class="testi-stars-up">★★★★★</div>
+        <p class="testi-text-up">Passei anos sobrevivendo à noite. O Noite Blindada foi o que realmente mudou meu padrão. Não é só dormir mais — é dormir sem acordar em pânico. Isso muda o dia inteiro.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFÍCIOS -->
+  <section class="benefits-upsell">
+    <h2 class="benefits-title animate-in">O que muda na sua noite</h2>
+    <p class="benefits-subtitle animate-in delay-1">Este não é um protocolo adicional. É uma reconstrução do padrão noturno.</p>
+    <div class="benefits-grid">
+      <div class="benefit-card animate-in delay-1">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Alerta Reduzido</h3>
+        <p>Sua mente para de entrar em modo de vigilância quando a luz apaga.</p>
+      </div>
+
+      <div class="benefit-card animate-in delay-2">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3>Menos Despertares</h3>
+        <p>Acorda menos vezes ou volta a dormir sem entrar em espiral.</p>
+      </div>
+
+      <div class="benefit-card animate-in delay-3">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 3v1m0 16v1M4.22 4.22l.7.7m12.72 12.72.7.7M3 12H4m16 0h1M4.22 19.78l.7-.7M18.36 5.64l.7-.7"/><circle cx="12" cy="12" r="4"/></svg>
+        </div>
+        <h3>Noite Previsível</h3>
+        <p>Você sabe o que esperar. A incerteza que causava ansiedade desaparece.</p>
+      </div>
+
+      <div class="benefit-card animate-in delay-4">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <h3>Segurança Interna</h3>
+        <p>Você deita sabendo que sua mente não vai te trair durante a noite.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- OFERTA -->
+  <section class="offer-upsell">
+    <div class="offer-container animate-in">
+      <span class="offer-label">Método Noite Blindada</span>
+      <h2 class="offer-title">Sua Noite Blindada</h2>
+      <p class="offer-subtitle">O aprofundamento que sua rotina noturna precisa</p>
+
+      <div class="price-block">
+        <span class="price-currency">R$</span>
+        <span class="price-value">27,80</span>
+      </div>
+
+      <a href="#" class="cta-main">Quero Blindar Minha Noite</a>
+      <p class="cta-sub">Acesso imediato · Sem assinatura · Sem renovação</p>
+
+      <div class="downsell-wrap">
+        <a href="#" class="downsell-btn">Não quero essa opção</a>
+      </div>
+
+      <div class="guarantee-mini">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>Garantia de 7 dias — reembolso sem perguntas</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer-upsell">
+    <p>© 2026 Método Noite Blindada · Todos os direitos reservados</p>
+    <p>Este produto é material educativo e de apoio. Não substitui acompanhamento médico.</p>
+  </footer>
+
+  <script>
+    // Animação ao scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.animate-in').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'all 0.8s ease';
+      observer.observe(el);
+    });
+
+    // Scroll suave
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
