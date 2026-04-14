@@ -3,24 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exportar Seções — Protocolo Anti-Madrugada</title>
+  <title>Exportar Seções — Plano Noite Blindada</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-
-  <!-- dom-to-image-more para captura -->
   <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@3.4.0/src/dom-to-image-more.min.js"></script>
-
-  <!-- JSZip para exportar todas as seções como ZIP -->
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-
-  <!-- Reutiliza os estilos originais da landing page -->
   <link rel="stylesheet" href="style.css" />
 
   <style>
-    /* ══════════════════════════════════════
-       EXPORT PAGE — estilos específicos
-    ══════════════════════════════════════ */
     *, *::before, *::after { box-sizing: border-box; }
 
     body {
@@ -28,13 +19,11 @@
       margin: 0;
       padding: 60px 0 120px;
       font-family: 'Inter', sans-serif;
-      /* scrollbar invisível mas funcional */
       scrollbar-width: none;
       -ms-overflow-style: none;
     }
     body::-webkit-scrollbar { display: none; }
 
-    /* ── Botão fixo "Baixar Tudo como ZIP" ── */
     .zip-bar {
       position: fixed;
       top: 0;
@@ -60,7 +49,7 @@
     }
 
     .zip-bar-title span {
-      color: #4ade80;
+      color: #7FB8A4;
     }
 
     .btn-zip {
@@ -69,7 +58,7 @@
       gap: 10px;
       background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
       border: 1px solid rgba(74,222,128,0.4);
-      color: #4ade80;
+      color: #7FB8A4;
       font-size: 13px;
       font-weight: 700;
       letter-spacing: 1px;
@@ -93,14 +82,12 @@
       transform: none;
     }
 
-    /* ── Wrapper de cada seção ── */
     .export-block {
       width: 768px;
       margin: 0 auto 100px;
       position: relative;
     }
 
-    /* Label acima da seção */
     .export-label {
       font-size: 11px;
       font-weight: 700;
@@ -113,7 +100,6 @@
       white-space: nowrap;
     }
 
-    /* Container da seção capturável */
     .section-capture {
       width: 768px;
       min-width: 768px;
@@ -122,7 +108,6 @@
       position: relative;
     }
 
-    /* Remove bordas para mesclagem perfeita no checkout (exceto final-ticket) */
     .section-capture .section {
       border: none !important;
     }
@@ -131,21 +116,32 @@
       display: none !important;
     }
 
-    .section-capture#capture-9 .section-title {
-      font-size: 40px;
-      line-height: 1.15;
-      margin-bottom: 30px;
+    .section-capture .hero {
+      min-height: 560px;
+    }
+    .section-capture .hero-title {
+      font-size: 56px;
+    }
+    .section-capture .section-title {
+      font-size: 42px;
+      line-height: 1.2;
+      margin-bottom: 24px;
+    }
+    .section-capture .hero-sub {
+      font-size: 18px;
+    }
+    .section-capture .container {
+      max-width: 720px;
+      padding: 0 24px;
     }
 
-    /* Seção 10 - preço final */
-    .section-capture#capture-10 .ticket-badge {
-      white-space: nowrap;
-    }
-    .section-capture#capture-10 {
-      min-height: 900px;
+    .section-capture .grad-text,
+    .section-capture .grad-text-red,
+    .section-capture .grad-text-green,
+    .section-capture .grad-text-gold {
+      filter: none;
     }
 
-    /* Botão de download individual */
     .btn-download {
       margin-top: 16px;
       display: inline-flex;
@@ -153,7 +149,7 @@
       gap: 10px;
       background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
       border: 1px solid rgba(74,222,128,0.35);
-      color: #4ade80;
+      color: #7FB8A4;
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 1.5px;
@@ -178,7 +174,6 @@
     }
     .btn-download svg { flex-shrink: 0; }
 
-    /* Feedback de progresso */
     .progress-toast {
       position: fixed;
       bottom: 32px;
@@ -186,7 +181,7 @@
       transform: translateX(-50%) translateY(100px);
       background: rgba(5,46,22,0.95);
       border: 1px solid rgba(74,222,128,0.3);
-      color: #4ade80;
+      color: #7FB8A4;
       font-size: 13px;
       font-weight: 600;
       padding: 14px 28px;
@@ -201,42 +196,28 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* Ajustes de largura fixa para seções que usam vw/viewport */
-    .section-capture .hero {
-      min-height: 560px;
+    .footer-export {
+      padding: 40px 20px;
+      text-align: center;
+      background: #000;
+      border-top: 1px solid #111;
     }
-    .section-capture .hero-title {
-      font-size: 56px;
+    .footer-export p {
+      color: #666;
+      font-size: 12px;
+      margin: 0 0 8px;
     }
-    .section-capture .section-title {
-      font-size: 42px;
-      line-height: 1.2;
-      margin-bottom: 24px;
-    }
-    .section-capture .hero-sub {
-      font-size: 18px;
-    }
-    .section-capture .container {
-      max-width: 720px;
-      padding: 0 24px;
-    }
-
-    /* Fix grad-text para dom-to-image-more (SVG-based fallback) */
-    .section-capture .grad-text,
-    .section-capture .grad-text-red,
-    .section-capture .grad-text-green,
-    .section-capture .grad-text-gold {
-      /* Mantém o gradient mas remove filter que pode causar problemas */
-      filter: none;
+    .footer-export .footer-disclaimer {
+      color: #444;
+      font-size: 10px;
     }
   </style>
 </head>
 <body>
 
-  <!-- ── Barra fixa com botão ZIP ── -->
   <div class="zip-bar">
     <div class="zip-bar-title">
-      Exportar Seções — <span>Protocolo Anti-Madrugada</span>
+      Exportar Seções — <span>Plano Noite Blindada</span>
     </div>
     <button class="btn-zip" id="btn-zip-all" onclick="downloadAllAsZip()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -248,26 +229,25 @@
     </button>
   </div>
 
-  <!-- ══════════════════════════════════════
-       SEÇÃO 1 — HERO
-  ══════════════════════════════════════ -->
+  <!-- SEÇÃO 1 — HERO -->
   <div class="export-block">
     <div class="export-label">1. HERO</div>
     <div class="section-capture" id="capture-1">
       <section class="hero" id="hero">
         <div class="hero-img-wrap">
-          <img src="hero.png" alt="Quarto escuro — a noite que não descansa" class="hero-img" />
+          <img src="heronew.jpg" alt="Quarto escuro — a noite que não descansa" class="hero-img" />
           <div class="hero-overlay"></div>
         </div>
         <div class="hero-content">
-          <span class="badge">PROTOCOLO ANTI-MADRUGADA</span>
-          <h1 class="hero-title">
-            Você deita exausto.<br/>
-            <span class="grad-text">Sua mente não recebeu o aviso.</span>
+          <span class="badge animate-on-scroll">PLANO NOITE BLINDADA</span>
+          <h1 class="hero-title animate-on-scroll">
+            <span class="hero-title-line1">FREIO NOTURNO +</span>
+            <span class="hero-title-line1">APOIO NOTURNO COMPLETO</span>
           </h1>
-          <p class="hero-sub">O corpo para. A cabeça não desliga.</p>
-          <div class="hero-line"></div>
-          <p class="hero_meta">A solução começa antes do travesseiro.</p>
+          <div class="hero-title-line2 grad-text animate-on-scroll">Menos Alerta ao Deitar.<br/>Mais Segurança Para Descansar.</div>
+          <p class="hero-sub animate-on-scroll">Reduza o hiperalerta antes de dormir.<br/>Tenha mais segurança para atravessar noites difíceis.</p>
+          <div class="hero-line animate-on-scroll"></div>
+          <p class="hero_meta animate-on-scroll">12 meses de apoio guiado • menos de R$ 2,50/mês • estrutura prática para noites reais</p>
         </div>
       </section>
     </div>
@@ -281,9 +261,7 @@
     </button>
   </div>
 
-  <!-- ══════════════════════════════════════
-       SEÇÃO 2 — PROBLEMA
-  ══════════════════════════════════════ -->
+  <!-- SEÇÃO 2 — PROBLEMA / DOR -->
   <div class="export-block">
     <div class="export-label">2. PROBLEMA</div>
     <div class="section-capture" id="capture-2">
@@ -291,29 +269,34 @@
         <div class="glow-radial glow-red"></div>
         <div class="container">
           <span class="section-tag tag-red">A DOR QUE VOCÊ CONHECE BEM</span>
-          <h2 class="section-title">Você não está só sem dormir.<br/><span class="grad-text-red">Você está entrando na noite já em batalha.</span></h2>
-          <p class="section-lead">A cama, que deveria ser o fim do dia e o seu refúgio, virou o começo de uma batalha silenciosa.</p>
+          <h2 class="section-title">O problema não é só dormir.<br/><span class="grad-text-red">É deitar com o alarme interno ainda ligado.</span></h2>
+          <p class="section-lead">Seu corpo até pede descanso.<br/>Mas a mente não recebe o sinal de que o dia terminou.<br/><br/>Por isso, a cama vira tensão.<br/>A madrugada parece ameaça.<br/>E tentar dormir à força só aumenta o alerta.</p>
           <div class="pain-grid">
             <div class="pain-card">
               <div class="pain-icon">🧠</div>
-              <p>"Fecho os olhos e a lista do dia inteiro volta de uma vez."</p>
+              <p>"Fecho os olhos e o dia inteiro volta. Fico replayando tudo."</p>
             </div>
             <div class="pain-card">
               <div class="pain-icon">⏰</div>
-              <p>Acorda às 2h, 3h, 4h. Olha o relógio. O desespero cresce.</p>
+              <p>Acorda às 2h, 3h, 4h. O coração dispara. O desespero cresce.</p>
             </div>
             <div class="pain-card">
               <div class="pain-icon">🔁</div>
-              <p>Quanto mais tenta parar de pensar, mais acelerada a cabeça fica.</p>
+              <p>Quanto mais tenta relaxar, mais a mente acelera. É contraditório.</p>
             </div>
             <div class="pain-card">
               <div class="pain-icon">☀️</div>
-              <p>Amanhece destruído. Funciona no automático até a hora de dormir. E tudo começa de novo.</p>
+              <p>Amanhã você acorda destruído. E a noite seguinte é a mesma coisa.</p>
             </div>
+          </div>
+          <div class="truth-block">
+            <p class="section-lead" style="font-size: 18px; font-weight: 600; color: #fff;">Você não tem problema com sono. Tem problema com hiperalerta emocional noturno.</p>
+            <div class="hero-line"></div>
+            <p class="section-lead" style="font-size: 16px; color: #aaa;">Tentar forçar o sono piora tudo.<br/>O sono não entra enquanto o alerta não baixa.<br/>Essa é a causa real. E tem solução.</p>
           </div>
           <div class="verbatim-block">
             <span class="quote-mark">"</span>
-            <p class="verbatim-text">"Deito na cama e o sono não vem. O corpo desliga e a mente não."</p>
+            <p class="verbatim-text">"Deito na cama e o corpo desliga, mas a mente continua acordada. É esgotador."</p>
             <span class="verbatim-src">— Relato real, Reddit Brasil</span>
           </div>
         </div>
@@ -329,45 +312,52 @@
     </button>
   </div>
 
-  <!-- ══════════════════════════════════════
-       SEÇÃO 3 — VERDADE
-  ══════════════════════════════════════ -->
+  <!-- SEÇÃO 3 — MECANISMO / FREIO NOTURNO -->
   <div class="export-block">
-    <div class="export-label">3. VERDADE</div>
+    <div class="export-label">3. MECANISMO</div>
     <div class="section-capture" id="capture-3">
-      <section class="section truth-section" id="verdade">
-        <div class="glow-radial glow-blue"></div>
+      <section class="section method-section" id="mecanismo">
+        <div class="glow-radial glow-green"></div>
         <div class="container">
-          <span class="section-tag tag-blue">O QUE NINGUÉM TE EXPLICOU</span>
-          <h2 class="section-title">O problema<br/>não é<br/><span class="grad-text">falta de sono.</span></h2>
-          <p class="section-lead">É que sua mente entra na cama sem receber o sinal de que o dia terminou.</p>
-          <div class="truth-block">
-            <div class="truth-row">
-              <div class="truth-icon-wrap"><span class="truth-icon">⚡</span></div>
-              <div>
-                <h3 class="truth-h3">Sua mente ainda está processando o dia</h3>
-                <p class="truth-p">Quando você deita, a cabeça continua rodando pendências, conversas, preocupações. O silêncio da cama não acalma, ele amplifica.</p>
+          <span class="section-tag tag-green">O MECANISMO</span>
+          <h2 class="section-title">O<br/><span class="grad-text-green">Freio Noturno.</span></h2>
+          <p class="section-lead">Não tente forçar o sono. Primeiro você precisa reduzir o alerta. Só depois o sono chega.</p>
+          
+          <div class="method-metaphor">
+            <div class="metaphor-card">
+              <p class="metaphor-old"><span class="label-red">O que todo mundo faz:</span><br/>Tentar parar o carro sem tirar o pé do acelerador.</p>
+              <div class="metaphor-divider">VS</div>
+              <p class="metaphor-new"><span class="label-green">Freio Noturno:</span><br/>Pisar no freio primeiro. Depois o carro para.</p>
+            </div>
+          </div>
+
+          <div class="method-steps">
+            <div class="step-item">
+              <div class="step-num">01</div>
+              <div class="step-content">
+                <h3>Encerramento Interno</h3>
+                <p>Fechar as abas mentais antes de deitar. Não deixar nada pendente.</p>
               </div>
             </div>
-            <div class="truth-row">
-              <div class="truth-icon-wrap"><span class="truth-icon">🚫</span></div>
-              <div>
-                <h3 class="truth-h3">Tentar dormir na força piora tudo</h3>
-                <p class="truth-p">Cada tentativa frustrada reforça o ciclo. Quanto mais você força, mais o cérebro entende que tem algo errado, e responde com mais alerta.</p>
+            <div class="step-item">
+              <div class="step-num">02</div>
+              <div class="step-content">
+                <h3>Desarmamento do Alerta</h3>
+                <p>Baixar o estado de vigilância sem brigar com a própria cabeça.</p>
               </div>
             </div>
-            <div class="truth-row">
-              <div class="truth-icon-wrap"><span class="truth-icon">📊</span></div>
-              <div>
-                <h3 class="truth-h3">Não é frescura. Não é fraqueza.</h3>
-                <p class="truth-p">É um padrão real, reconhecido e com solução. O Vigitel Brasil 2024 confirma: 31,7% dos brasileiros relatam pelo menos um sintoma de insônia. Você não está sozinho e não precisa continuar assim.</p>
+            <div class="step-item">
+              <div class="step-num">03</div>
+              <div class="step-content">
+                <h3>Ponte da Madrugada</h3>
+                <p>Se acordar de madrugada, saber exatamente o que fazer para voltar a dormir.</p>
               </div>
             </div>
           </div>
         </div>
       </section>
     </div>
-    <button class="btn-download" onclick="downloadSection('capture-3', '03-verdade')">
+    <button class="btn-download" onclick="downloadSection('capture-3', '03-mecanismo')">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
         <polyline points="7 10 12 15 17 10"/>
@@ -377,29 +367,28 @@
     </button>
   </div>
 
-  <!-- ══════════════════════════════════════
-       SEÇÃO 4 — SEPARAÇÃO
-  ══════════════════════════════════════ -->
+  <!-- SEÇÃO 4 — CONTRASTE -->
   <div class="export-block">
-    <div class="export-label">4. SEPARAÇÃO (ANTES vs DEPOIS)</div>
+    <div class="export-label">4. CONTRASTE</div>
     <div class="section-capture" id="capture-4">
-      <section class="section contrast-section" id="separacao">
+      <section class="section contrast-section" id="contraste">
         <div class="container">
           <span class="section-tag tag-white">DOIS CAMINHOS</span>
-          <h2 class="section-title">A diferença entre<br/><span class="grad-text">apagar de exaustão e descansar de verdade.</span></h2>
+          <h2 class="section-title">Entrar na cama<br/><span class="grad-text">com preparação ou sem ela.</span></h2>
           <div class="contrast-wrap">
             <div class="contrast-card card-wrong">
               <div class="contrast-card-header">
                 <span class="contrast-label label-red">❌ SEM O FREIO NOTURNO</span>
               </div>
               <ul class="contrast-list">
-                <li>Deita exausto, mente acelera</li>
-                <li>Tenta forçar o sono, piora o alerta</li>
-                <li>Acorda 2h, 3h, 4h, e entra em pânico</li>
-                <li>Manhã chega antes do descanso</li>
-                <li>Repete o ciclo no dia seguinte</li>
+                <li>Corpo quer dormir, mente acelera</li>
+                <li>Tenta forçar, o alerta piora</li>
+                <li>Acorda no meio da noite e improvisa</li>
+                <li>Olha o relógio e o desespero dispara</li>
+                <li>Repete a mesma batalha toda noite</li>
+                <li>A cama vira campo de guerra</li>
               </ul>
-              <div class="contrast-footer footer-red">BATALHA TODA NOITE</div>
+              <div class="contrast-footer footer-red">LUTA TODA NOITE</div>
             </div>
             <div class="contrast-arrow-center">→</div>
             <div class="contrast-card card-right">
@@ -407,19 +396,20 @@
                 <span class="contrast-label label-green">✓ COM O FREIO NOTURNO</span>
               </div>
               <ul class="contrast-list">
-                <li>Protocolo de transição antes da cama</li>
-                <li>Alarme interno desarmado com método</li>
-                <li>Acorda na madrugada e sabe exatamente o que fazer</li>
-                <li>Manhã com cabeça funcional e clara</li>
-                <li>Confiança progressiva no próprio corpo</li>
+                <li>Entra na noite com preparação</li>
+                <li>Tem método para reduzir alerta</li>
+                <li>Sabe exatamente o que fazer antes de dormir</li>
+                <li>Se acordar, não entra em pânico</li>
+                <li>A noite deixa de parecer ameaça</li>
+                <li>Sente que tem apoio recorrente</li>
               </ul>
-              <div class="contrast-footer footer-green">ENTRADA SUAVE NO DESCANSO</div>
+              <div class="contrast-footer footer-green">MENOS LUTA, MAIS DESCANSO</div>
             </div>
           </div>
         </div>
       </section>
     </div>
-    <button class="btn-download" onclick="downloadSection('capture-4', '04-separacao')">
+    <button class="btn-download" onclick="downloadSection('capture-4', '04-contraste')">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
         <polyline points="7 10 12 15 17 10"/>
@@ -429,52 +419,22 @@
     </button>
   </div>
 
-  <!-- ══════════════════════════════════════
-       SEÇÃO 5 — SOLUÇÃO
-  ══════════════════════════════════════ -->
-  <div class="export-block">
-    <div class="export-label">5. SOLUÇÃO (FREIO NOTURNO)</div>
+  <!-- SEÇÃO 5 — SEU REFÚGIO NOTURNO -->
+    <div class="export-label">5. SEU REFÚGIO NOTURNO</div>
     <div class="section-capture" id="capture-5">
-      <section class="section method-section" id="solucao">
-        <div class="glow-radial glow-green"></div>
+      <section class="section offer-section" id="oferta">
+        <div class="glow-radial glow-gold"></div>
         <div class="container">
-          <span class="section-tag tag-green">O MECANISMO</span>
-          <h2 class="section-title">O<br/><span class="grad-text-green">Freio Noturno.</span></h2>
-          <p class="section-lead">A lógica é simples: antes de tentar dormir, sua mente precisa receber o sinal de que já é seguro sair do modo de alerta.</p>
-          <div class="method-metaphor">
-            <div class="metaphor-card">
-              <p class="metaphor-old"><span class="label-red">Método antigo:</span><br/>Tentar estacionar o carro sem tirar o pé do acelerador.</p>
-              <div class="metaphor-divider">VS</div>
-              <p class="metaphor-new"><span class="label-green">Freio Noturno:</span><br/>Desacelerar primeiro, depois o carro para com naturalidade.</p>
-            </div>
-          </div>
-          <div class="method-steps">
-            <div class="step-item">
-              <div class="step-num">01</div>
-              <div class="step-content">
-                <h3>Encerramento Interno do Dia</h3>
-                <p>Fechar as abas abertas da mente antes de deitar. Não é meditação, é uma sequência curta e definida para encerrar o dia por dentro.</p>
-              </div>
-            </div>
-            <div class="step-item">
-              <div class="step-num">02</div>
-              <div class="step-content">
-                <h3>Desarmamento do Alerta</h3>
-                <p>Condução guiada para interromper o looping. Sem precisar forçar o silêncio, sem brigar com a própria cabeça.</p>
-              </div>
-            </div>
-            <div class="step-item">
-              <div class="step-num">03</div>
-              <div class="step-content">
-                <h3>Ponte da Madrugada</h3>
-                <p>Para quem acorda entre 2h e 4h: o que fazer nos primeiros 60 segundos para não deixar o pânico crescer.</p>
-              </div>
-            </div>
-          </div>
+          <span class="section-tag tag-gold">SEU REFÚGIO NOTURNO</span>
+          <h2 class="section-title">Um lugar para voltar<br/><span class="grad-text-gold">sempre que a noite apertar.</span></h2>
+          <p class="section-lead" style="text-align: left; max-width: 800px; margin: 0 auto 20px;">O Plano Noite Blindada não é um curso para consumir uma vez.<br/>É uma estrutura de apoio para usar quando sua mente entra em alerta.<br/>Um refúgio guiado para noites difíceis.</p>
+          <p class="section-lead" style="text-align: left; max-width: 800px; margin: 0 auto 20px;">O Freio Noturno muda a ordem: primeiro você reduz o alerta, depois o sono encontra espaço.</p>
+          <p class="section-lead" style="text-align: left; max-width: 800px; margin: 0 auto 20px;">Você não está comprando conteúdo. Está garantindo um lugar para voltar.</p>
+          <p class="section-lead" style="text-align: left; max-width: 800px; margin: 0 auto;">Quando a noite apertar, você já sabe onde voltar.</p>
         </div>
       </section>
     </div>
-    <button class="btn-download" onclick="downloadSection('capture-5', '05-solucao')">
+    <button class="btn-download" onclick="downloadSection('capture-5', '05-oferta')">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
         <polyline points="7 10 12 15 17 10"/>
@@ -484,44 +444,105 @@
     </button>
   </div>
 
-  <!-- ══════════════════════════════════════
-       SEÇÃO 6 — BENEFÍCIOS
-  ══════════════════════════════════════ -->
+  <!-- SEÇÃO 6 — BENEFÍCIOS / STACK -->
   <div class="export-block">
     <div class="export-label">6. BENEFÍCIOS</div>
     <div class="section-capture" id="capture-6">
       <section class="section icons-section" id="beneficios">
         <div class="container">
-          <span class="section-tag tag-white">O QUE MUDA</span>
-          <h2 class="section-title">Quatro transformações.<br/><span class="grad-text">Uma noite diferente.</span></h2>
-          <div class="icons-grid">
-            <div class="icon-card">
-              <div class="icon-hex">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+          <span class="section-tag tag-white">O QUE VOCÊ RECEBE</span>
+          <h2 class="section-title">Tudo que você precisa<br/><span class="grad-text">para uma noite mais calma.</span></h2>
+
+          <div class="stack-section">
+            <h3 class="stack-title">Uso Antes de Dormir</h3>
+            <div class="icons-grid" style="grid-template-columns: repeat(3, 1fr);">
+              <div class="icon-card">
+                <div class="icon-hex">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <h3 class="icon-title">Protocolo Anti-Madrugada</h3>
+                <p class="icon-desc">Método completo.</p>
               </div>
-              <h3 class="icon-title">Mente em Silêncio</h3>
-              <p class="icon-desc">O looping para. A cabeça esvazia. O sono encontra espaço.</p>
+              <div class="icon-card">
+                <div class="icon-hex">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <h3 class="icon-title">Guia do Freio Noturno</h3>
+                <p class="icon-desc">Passo a passo.</p>
+              </div>
+              <div class="icon-card">
+                <div class="icon-hex">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <h3 class="icon-title">Áudio Mente em Paz</h3>
+                <p class="icon-desc">Guiado para dormir.</p>
+              </div>
             </div>
-            <div class="icon-card">
-              <div class="icon-hex">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+
+          <div class="stack-section">
+            <h3 class="stack-title">Uso Durante a Madrugada</h3>
+            <div class="icons-grid" style="grid-template-columns: repeat(3, 1fr);">
+              <div class="icon-card">
+                <div class="icon-hex">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+                </div>
+                <h3 class="icon-title">Ponte da Madrugada</h3>
+                <p class="icon-desc">Como voltar a dormir.</p>
               </div>
-              <h3 class="icon-title">Aplicável Hoje à Noite</h3>
-              <p class="icon-desc">Sem curva de aprendizado. Sem depender de nada externo. Você usa na primeira noite.</p>
+              <div class="icon-card">
+                <div class="icon-hex">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <h3 class="icon-title">Desliga a Mente em 2 Minutos</h3>
+                <p class="icon-desc">Técnica rápida.</p>
+              </div>
+              <div class="icon-card">
+                <div class="icon-hex">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg>
+                </div>
+                <h3 class="icon-title">Biblioteca de Áudios de Socorro Noturno</h3>
+                <p class="icon-desc">Socorro imediato.</p>
+              </div>
             </div>
-            <div class="icon-card">
-              <div class="icon-hex">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+
+          <div class="stack-section">
+            <h3 class="stack-title">Reorganização Interna</h3>
+            <div class="icons-grid" style="grid-template-columns: repeat(3, 1fr);">
+              <div class="icon-card">
+                <div class="icon-hex">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                </div>
+                <h3 class="icon-title">Diário de Transição Noturna</h3>
+                <p class="icon-desc">Registro.</p>
               </div>
-              <h3 class="icon-title">Madrugada Sem Pânico</h3>
-              <p class="icon-desc">Para quem acorda à noite, uma rota de retorno rápida que não alimenta o ciclo de ansiedade.</p>
+              <div class="icon-card">
+                <div class="icon-hex">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4"/><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+                </div>
+                <h3 class="icon-title">Checklist de Sabotadores Ocultos</h3>
+                <p class="icon-desc">Sabotadores.</p>
+              </div>
+              <div class="icon-card">
+                <div class="icon-hex">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/></svg>
+                </div>
+                <h3 class="icon-title">Reset da Noite — 3 Noites</h3>
+                <p class="icon-desc">Intensivo.</p>
+              </div>
             </div>
-            <div class="icon-card">
-              <div class="icon-hex">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v1m0 16v1M4.22 4.22l.7.7m12.72 12.72.7.7M3 12H4m16 0h1M4.22 19.78l.7-.7M18.36 5.64l.7-.7"/><circle cx="12" cy="12" r="4"/></svg>
-              </div>
-              <h3 class="icon-title">Manhã Diferente</h3>
-              <p class="icon-desc">Acorda funcional, mais claro, menos destruído. O dia não começa no vermelho.</p>
+          </div>
+
+          <div class="stack-section">
+            <div class="stack-continuity">
+              <h3 class="stack-title">Continuidade + Segurança</h3>
+              <ul class="continuity-list">
+                <li>✦ Novos conteúdos ao longo do ano</li>
+                <li>✦ Acesso por 12 meses</li>
+                <li>✦ Um lugar para voltar sempre que precisar</li>
+                <li>✦ Suporte contínuo para noites difíceis</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -537,122 +558,54 @@
     </button>
   </div>
 
-  <!-- ══════════════════════════════════════
-       SEÇÃO 7 — O QUE VOCÊ RECEBE
-  ══════════════════════════════════════ -->
+  <!-- SEÇÃO 7 — DEPOIMENTOS -->
   <div class="export-block">
-    <div class="export-label">7. O QUE VOCÊ RECEBE</div>
+    <div class="export-label">7. DEPOIMENTOS</div>
     <div class="section-capture" id="capture-7">
-      <section class="section deliverables-section" id="recebe">
-        <div class="glow-radial glow-blue"></div>
-        <div class="container">
-          <span class="section-tag tag-blue">TUDO QUE ESTÁ INCLUÍDO</span>
-          <h2 class="section-title">O que entra<br/><span class="grad-text">no protocolo.</span></h2>
-          <div class="deliverables-list">
-            <div class="deliv-item">
-              <div class="deliv-num">01</div>
-              <div class="deliv-info">
-                <h3>Protocolo Anti-Madrugada — Guia Principal</h3>
-                <p>O método completo do Freio Noturno. Sequência aplicável hoje à noite, sem meditação, sem app, sem remédio.</p>
-              </div>
-              <div class="deliv-badge">PRINCIPAL</div>
-            </div>
-            <div class="deliv-item">
-              <div class="deliv-num">02</div>
-              <div class="deliv-info">
-                <h3>Áudio "Mente em Paz"</h3>
-                <p>Condução em voz guiada para quem precisa de apoio na transição. Para você não enfrentar a noite sozinho.</p>
-              </div>
-              <div class="deliv-badge">ÁUDIO</div>
-            </div>
-            <div class="deliv-item">
-              <div class="deliv-num">03</div>
-              <div class="deliv-info">
-                <h3>Checklist de Sabotadores Ocultos</h3>
-                <p>Os gatilhos invisíveis que sabotam sua noite antes de você deitar, tela, culpa, pendências, medo do dia seguinte, e o que fazer com cada um.</p>
-              </div>
-              <div class="deliv-badge">BÔNUS</div>
-            </div>
-            <div class="deliv-item">
-              <div class="deliv-num">04</div>
-              <div class="deliv-info">
-                <h3>Protocolo da Madrugada (Ponte de Retorno)</h3>
-                <p>Para quando você acorda no meio da noite e o pânico começa a crescer. Volte ao sono sem alimentar o ciclo.</p>
-              </div>
-              <div class="deliv-badge">BÔNUS</div>
-            </div>
-            <div class="deliv-item">
-              <div class="deliv-num">05</div>
-              <div class="deliv-info">
-                <h3>Diário de Transição Noturna</h3>
-                <p>Esvazia pendências, culpas e preocupações antes de deitar. Em menos de 5 minutos, por 7 noites seguidas.</p>
-              </div>
-              <div class="deliv-badge">BÔNUS</div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-    <button class="btn-download" onclick="downloadSection('capture-7', '07-o-que-recebe')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-        <polyline points="7 10 12 15 17 10"/>
-        <line x1="12" y1="15" x2="12" y2="3"/>
-      </svg>
-      Baixar como PNG
-    </button>
-  </div>
-
-  <!-- ══════════════════════════════════════
-       SEÇÃO 8 — DEPOIMENTOS
-  ══════════════════════════════════════ -->
-  <div class="export-block">
-    <div class="export-label">8. DEPOIMENTOS</div>
-    <div class="section-capture" id="capture-8">
       <section class="section testimonials-section" id="depoimentos">
         <div class="container">
-          <span class="section-tag tag-green">QUEM JÁ ATIVOU O FREIO</span>
-          <h2 class="section-title">Noites que<br/><span class="grad-text-green">deixaram de ser batalha.</span></h2>
+          <span class="section-tag tag-green">QUEM JÁ USA</span>
+          <h2 class="section-title">Noites que<br/><span class="grad-text-green">viraram refúgio.</span></h2>
           <div class="testimonials-grid">
             <div class="testi-card">
+              <div class="testi-context-label">Para quem acorda na madrugada</div>
               <div class="testi-header">
-                <img src="new.jpeg" alt="Juliana M." class="testi-avatar" />
                 <div class="testi-meta">
                   <strong>Juliana M.</strong>
-                  <span>Designer, 34 anos — São Paulo</span>
+                  <span>Designer, 34 anos — SP</span>
+                  <div class="testi-stars">★★★★★</div>
                 </div>
-                <div class="testi-stars">★★★★★</div>
               </div>
               <div class="testi-bubble">
-                <p>Acordava toda noite entre 2h e 3h e ficava calculando quanto sono ainda dava pra recuperar. Na quarta noite com o protocolo, pela primeira vez em meses consegui voltar a dormir sem entrar em espiral. Não é exagero. A Ponte da Madrugada foi o que mudou.</p>
+                <p>Acordar às 3h era devastador. Com o protocolo, consegui voltar a dormir sem pânico. A noite parou de ser ameaça.</p>
               </div>
               <div class="testi-time">✓ Verificado · há 3 semanas</div>
             </div>
             <div class="testi-card">
+              <div class="testi-context-label">Para quem deita acelerado</div>
               <div class="testi-header">
-                <img src="new2.jpeg" alt="Rodrigo S." class="testi-avatar" />
                 <div class="testi-meta">
                   <strong>Rodrigo S.</strong>
-                  <span>Analista Financeiro, 41 anos — Belo Horizonte</span>
+                  <span>Analista, 41 anos — BH</span>
+                  <div class="testi-stars">★★★★★</div>
                 </div>
-                <div class="testi-stars">★★★★★</div>
               </div>
               <div class="testi-bubble">
-                <p>Já tentei app, chá, melatonina, fone com chuva. Funcionavam uma noite. Depois voltava tudo. Quando entendi o que estava errado, tudo fez sentido. O protocolo muda o que você faz antes de tentar dormir, não durante.</p>
+                <p>Chegava na cama acelerado. O Freio me ensinou a desacelerar antes. Mudou como eu encaro a noite.</p>
               </div>
               <div class="testi-time">✓ Verificado · há 1 mês</div>
             </div>
             <div class="testi-card">
+              <div class="testi-context-label">Para quem sente a noite pesada</div>
               <div class="testi-header">
-                <img src="newavatar3.jpeg" alt="Camila R." class="testi-avatar" />
                 <div class="testi-meta">
                   <strong>Camila R.</strong>
                   <span>Professora, 28 anos — Recife</span>
+                  <div class="testi-stars">★★★★★</div>
                 </div>
-                <div class="testi-stars">★★★★★</div>
               </div>
               <div class="testi-bubble">
-                <p>Tinha vergonha de falar porque parece que todo mundo sabe dormir menos eu. O áudio Mente em Paz foi a primeira vez que senti silêncio interno de verdade, não só relaxamento por fora. Em uma semana a cama deixou de ser o pior lugar da minha noite.</p>
+                <p>O áudio parece que tem alguém ali comigo. Em uma semana, a noite ficou menos pesada. Menos assustadora.</p>
               </div>
               <div class="testi-time">✓ Verificado · há 2 semanas</div>
             </div>
@@ -660,7 +613,7 @@
         </div>
       </section>
     </div>
-    <button class="btn-download" onclick="downloadSection('capture-8', '08-depoimentos')">
+    <button class="btn-download" onclick="downloadSection('capture-7', '07-depoimentos')">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
         <polyline points="7 10 12 15 17 10"/>
@@ -670,43 +623,42 @@
     </button>
   </div>
 
-  <!-- ══════════════════════════════════════
-       SEÇÃO 9 — ANCORAGEM DE PREÇO
-  ══════════════════════════════════════ -->
+  <!-- SEÇÃO 8 — ANCORAGEM -->
   <div class="export-block">
-    <div class="export-label">9. ANCORAGEM DE PREÇO</div>
-    <div class="section-capture" id="capture-9">
+    <div class="export-label">8. ANCORAGEM</div>
+    <div class="section-capture" id="capture-8">
       <section class="section anchor-section" id="ancoragem">
         <div class="glow-radial glow-gold"></div>
         <div class="container">
-          <span class="section-tag tag-gold">O MERCADO COBRA CARO POR SOLUÇÕES INCOMPLETAS</span>
-          <h2 class="section-title">Você já pagou por muita coisa<br/><span class="grad-text-gold">e continuou acordado.</span></h2>
+          <span class="section-tag tag-gold">COMPARE O CUSTO</span>
+          <h2 class="section-title">O que você gasta<br/><span class="grad-text-gold">tentando descansar.</span></h2>
           <div class="anchor-compare">
             <div class="anchor-item">
               <span class="anchor-icon">📱</span>
-              <span class="anchor-name">Apps de meditação</span>
-              <span class="anchor-price">R$ 28–80/mês</span>
-              <span class="anchor-note">Assinatura, paywall, conteúdo genérico</span>
+              <span class="anchor-name">Apps de sono (1 mês)</span>
+              <span class="anchor-price">R$ 28/mês</span>
             </div>
             <div class="anchor-item">
               <span class="anchor-icon">🧘</span>
-              <span class="anchor-name">Sessão de terapia</span>
-              <span class="anchor-price">R$ 90–260/sessão</span>
-              <span class="anchor-note">Exige tempo, agenda e investimento contínuo</span>
+              <span class="anchor-name">1 sessão terapia</span>
+              <span class="anchor-price">R$ 90</span>
             </div>
             <div class="anchor-item">
               <span class="anchor-icon">💊</span>
-              <span class="anchor-name">Remédios para dormir</span>
-              <span class="anchor-price">R$ 40–120/caixa</span>
-              <span class="anchor-note">Dependência, efeitos colaterais, não resolve a causa</span>
+              <span class="anchor-name">Remédios (1 caixa)</span>
+              <span class="anchor-price">R$ 45</span>
+            </div>
+            <div class="anchor-item">
+              <span class="anchor-icon">🌙</span>
+              <span class="anchor-name">Uma madrugada ruim</span>
+              <span class="anchor-price">Dia perdido</span>
             </div>
           </div>
-          <div class="anchor-divider-line"></div>
-          <p class="anchor-reason">Este protocolo foi criado para ser acessível, porque uma noite ruim já custa caro demais no dia seguinte. Sem assinatura. Sem renovação. Você paga uma vez e acessa para sempre.</p>
+          <p class="anchor-reason">Por menos do que um app mensal, você garante 12 meses de apoio real.<br/>Menos de R$ 2,50 por mês para ter um lugar para voltar quando a noite apertar.</p>
         </div>
       </section>
     </div>
-    <button class="btn-download" onclick="downloadSection('capture-9', '09-ancoragem')">
+    <button class="btn-download" onclick="downloadSection('capture-8', '08-ancoragem')">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
         <polyline points="7 10 12 15 17 10"/>
@@ -716,43 +668,90 @@
     </button>
   </div>
 
-  <!-- ══════════════════════════════════════
-       SEÇÃO 10 — PREÇO FINAL
-  ══════════════════════════════════════ -->
+  <!-- SEÇÃO 9 — FAQ -->
+  <div class="export-block">
+    <div class="export-label">9. FAQ</div>
+    <div class="section-capture" id="capture-9">
+      <section class="section faq-section" id="faq">
+        <div class="container">
+          <span class="section-tag tag-white">DÚVIDAS?</span>
+          <h2 class="section-title">Deixa eu<br/><span class="grad-text">esclarecer.</span></h2>
+          
+          <div class="faq-grid">
+            <div class="faq-item">
+              <h3>Já tentei de tudo. Por que isso seria diferente?</h3>
+              <p>O Freio Noturno não é mais uma técnica genérica. É feito especificamente para quem já tentou de tudo e não conseguiu. A lógica é outra: primeiro você baixa o alerta, depois o sono chega.</p>
+            </div>
+            <div class="faq-item">
+              <h3>Meu problema é acordar no meio da noite. Não consigo dormir.</h3>
+              <p>Exatamente. O Plano foi criado para isso. A Ponte da Madrugada e a biblioteca de áudios são para você usar quando acordar às 2h, 3h ou 4h, e conseguir voltar a dormir.</p>
+            </div>
+            <div class="faq-item">
+              <h3>R$ 27,90 por ano? É muito barato, né?</h3>
+              <p>O preço não define profundidade. Ele foi pensado para tornar esse apoio acessível, simples de manter e fácil de decidir. Você não está pagando por promessa exagerada. Está entrando em uma estrutura prática para noites reais.</p>
+            </div>
+            <div class="faq-item">
+              <h3>Eu vou comprar e abandonar. Sempre acontece.</h3>
+              <p>Esse plano foi pensado justamente para isso. Não precisa consumir tudo de uma vez. Você volta nele quando precisar. É um lugar para voltar, não um curso para finalizar.</p>
+            </div>
+            <div class="faq-item">
+              <h3>Preciso de algo prático. Não tenho tempo.</h3>
+              <p>Todo conteúdo é prático. Áudios de 2-10 minutos. Checklists rápidos. Rotinas diretas. Na hora de dormir, você não quer ler texto longo. Nem precisa.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <button class="btn-download" onclick="downloadSection('capture-9', '09-faq')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Baixar como PNG
+    </button>
+  </div>
+
+  <!-- SEÇÃO 10 — PREÇO FINAL -->
   <div class="export-block">
     <div class="export-label">10. PREÇO FINAL</div>
     <div class="section-capture" id="capture-10">
       <section class="section final-section" id="preco">
-        <div class="glow-radial glow-green-strong"></div>
+        <div class="glow-radial glow-blue-strong"></div>
         <div class="container">
           <div class="final-ticket">
             <div class="ticket-texture"></div>
+
             <div class="ticket-corner tl"></div>
             <div class="ticket-corner tr"></div>
             <div class="ticket-corner bl"></div>
             <div class="ticket-corner br"></div>
+
             <div class="ticket-content">
-              <div class="ticket-badge">LEVE TUDO ISSO HOJE</div>
-              <div class="ticket-anchor">
-                <span class="anchor-old">De <s>R$ 97,00</s></span>
-              </div>
+              <div class="ticket-badge">PLANO NOITE BLINDADA</div>
+
+              <p class="ticket-emotional">Um lugar seguro para voltar quando a noite apertar.</p>
+
               <div class="ticket-price-block">
-                <span class="price-label">por apenas</span>
                 <div class="price-main">
                   <span class="price-currency">R$</span>
-                  <span class="price-value">9</span>
+                  <span class="price-value">27</span>
                   <span class="price-cents">,90</span>
                 </div>
+                <span class="price-period">por ano</span>
               </div>
-              <p class="ticket-benefit">Acesso Vitalício e Imediato · Sem Assinatura · Sem Renovação</p>
+
+              <p class="ticket-benefit">12 meses de apoio noturno • menos de R$ 2,50/mês</p>
+
               <div class="ticket-divider-line"></div>
+
               <div class="product-logo">
                 <div class="logo-icon">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#logoGrad2)" stroke-width="1.5">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#logoGrad)" stroke-width="1.5">
                     <defs>
-                      <linearGradient id="logoGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#4ade80"/>
-                        <stop offset="100%" stop-color="#22d3ee"/>
+                      <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#9DB4FF"/>
+                        <stop offset="100%" stop-color="#CBD5FF"/>
                       </linearGradient>
                     </defs>
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -760,11 +759,13 @@
                   </svg>
                 </div>
                 <div class="logo-text-wrap">
-                  <span class="logo-text-main">PROTOCOLO</span>
-                  <span class="logo-text-sub">ANTI·MADRUGADA</span>
+                  <span class="logo-text-main">PLANO</span>
+                  <span class="logo-text-sub">NOITE BLINDADA</span>
                 </div>
               </div>
+
               <div class="ticket-divider-line"></div>
+
               <div class="guarantee-block">
                 <div class="guarantee-icon">
                   <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -773,34 +774,51 @@
                   </svg>
                 </div>
                 <div class="guarantee-text">
-                  <strong>Garantia Incondicional de 7 Dias</strong>
-                  <p>Se não fizer sentido para a sua rotina noturna, você pode pedir reembolso dentro do prazo.<br/>Sem burocracia. Sem julgamento.</p>
+                  <strong>Garantia de 7 Dias</strong>
+                  <p>Se não fizer sentido para você, basta pedir o cancelamento. Simples, sem burocracia.</p>
                 </div>
               </div>
 
-              <p class="cta-text" style="text-align: center; margin-top: 20px; color: #fff; font-size: 18px;">↓</p>
-              <p class="cta-text" style="text-align: center; margin-top: 10px; color: #fff; font-size: 20px; font-weight: 600;">Sua primeira noite menos hostil começa agora.</p>
-              <p class="cta-text" style="text-align: center; margin-top: 8px; color: #aaa; font-size: 16px;">Complete seus dados abaixo.</p>
+              <a href="https://pay.wiapy.com/plano-noite-blindada" class="cta-button" target="_blank" rel="noopener noreferrer">Quero garantir meu acesso</a>
+              <p class="cta-text sub">12 meses de apoio • Garantia de 7 dias • Um lugar para voltar quando precisar</p>
+
             </div>
           </div>
         </div>
       </section>
     </div>
-    <button class="btn-download" id="btn-capture-10" onclick="downloadSection('capture-10', '10-preco-final')">
+    <button class="btn-download" onclick="downloadSection('capture-10', '10-preco-final')">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
         <polyline points="7 10 12 15 17 10"/>
         <line x1="12" y1="15" x2="12" y2="3"/>
       </svg>
-      Baixar Seção 10
+      Baixar como PNG
     </button>
   </div>
 
-  <!-- Toast de progresso -->
+  <!-- SEÇÃO 11 — RODAPÉ -->
+  <div class="export-block">
+    <div class="export-label">11. RODAPÉ</div>
+    <div class="section-capture" id="capture-11">
+      <footer class="footer-export">
+        <p>© 2026 Plano Noite Blindada · Todos os direitos reservados</p>
+        <p class="footer-disclaimer">Este produto é material educativo e de apoio. Não substitui acompanhamento médico ou psicológico.</p>
+      </footer>
+    </div>
+    <button class="btn-download" onclick="downloadSection('capture-11', '11-rodape')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Baixar como PNG
+    </button>
+  </div>
+
   <div class="progress-toast" id="progress-toast"></div>
 
   <script>
-    // ── Configuração de escala para alta resolução ──
     const SCALE = 2;
 
     function showToast(msg) {
@@ -812,7 +830,6 @@
       document.getElementById('progress-toast').classList.remove('show');
     }
 
-    // ── Captura uma seção e retorna uma Promise<Blob> ──
     function captureSection(elementId) {
       const el = document.getElementById(elementId);
       const w = el.offsetWidth;
@@ -831,7 +848,6 @@
       });
     }
 
-    // ── Baixa uma única seção como PNG ──
     async function downloadSection(elementId, filename) {
       const btn = event.currentTarget;
       btn.disabled = true;
@@ -841,7 +857,7 @@
       try {
         const dataUrl = await captureSection(elementId);
         const link = document.createElement('a');
-        link.download = `protocolo-anti-madrugada_${filename}.png`;
+        link.download = `noite-blindada_${filename}.png`;
         link.href = dataUrl;
         link.click();
         showToast('✅ Download iniciado!');
@@ -862,29 +878,27 @@
       }
     }
 
-    // ── Definição de todas as seções para o ZIP ──
     const SECTIONS = [
-      { id: 'capture-1',  name: '01-hero' },
-      { id: 'capture-2',  name: '02-problema' },
-      { id: 'capture-3',  name: '03-verdade' },
-      { id: 'capture-4',  name: '04-separacao' },
-      { id: 'capture-5',  name: '05-solucao' },
-      { id: 'capture-6',  name: '06-beneficios' },
-      { id: 'capture-7',  name: '07-o-que-recebe' },
-      { id: 'capture-8',  name: '08-depoimentos' },
-      { id: 'capture-9',  name: '09-ancoragem' },
+      { id: 'capture-1', name: '01-hero' },
+      { id: 'capture-2', name: '02-problema' },
+      { id: 'capture-3', name: '03-mecanismo' },
+      { id: 'capture-4', name: '04-contraste' },
+      { id: 'capture-5', name: '05-oferta' },
+      { id: 'capture-6', name: '06-beneficios' },
+      { id: 'capture-7', name: '07-depoimentos' },
+      { id: 'capture-8', name: '08-ancoragem' },
+      { id: 'capture-9', name: '09-faq' },
       { id: 'capture-10', name: '10-preco-final' },
       { id: 'capture-11', name: '11-rodape' },
     ];
 
-    // ── Baixa todas as seções como ZIP com arquivos separados ──
     async function downloadAllAsZip() {
       const zipBtn = document.getElementById('btn-zip-all');
       zipBtn.disabled = true;
       zipBtn.textContent = 'Preparando ZIP…';
 
       const zip = new JSZip();
-      const folder = zip.folder('protocolo-anti-madrugada');
+      const folder = zip.folder('noite-blindada');
 
       for (let i = 0; i < SECTIONS.length; i++) {
         const s = SECTIONS[i];
@@ -892,9 +906,8 @@
 
         try {
           const dataUrl = await captureSection(s.id);
-          // Remove prefixo "data:image/png;base64,"
           const base64 = dataUrl.split(',')[1];
-          folder.file(`protocolo-anti-madrugada_${s.name}.png`, base64, { base64: true });
+          folder.file(`noite-blindada_${s.name}.png`, base64, { base64: true });
         } catch (err) {
           console.error(`Erro ao capturar ${s.id}:`, err);
           showToast(`⚠️ Erro em ${s.name}, pulando…`);
@@ -914,7 +927,7 @@
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'protocolo-anti-madrugada_secoes.zip';
+        link.download = 'noite-blindada_secoes.zip';
         link.click();
         URL.revokeObjectURL(url);
 
@@ -937,24 +950,22 @@
     }
   </script>
 
-  <!-- RODAPÉ MINIMALISTA -->
-  <div class="export-block">
-    <div class="export-label">11. RODAPÉ</div>
-    <div class="section-capture" id="capture-11">
-      <footer class="footer-export">
-        <p>© 2026 Protocolo Anti-Madrugada · Todos os direitos reservados</p>
-        <p class="footer-disclaimer">Este produto é material educativo e de apoio. Não substitui acompanhamento médico ou psicológico profissional.</p>
-      </footer>
-    </div>
-    <button class="btn-download" onclick="downloadSection('capture-11', '11-rodape')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-        <polyline points="7 10 12 15 17 10"/>
-        <line x1="12" y1="15" x2="12" y2="3"/>
-      </svg>
-      Baixar como PNG
-    </button>
-  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.05 });
+
+      document.querySelectorAll('.section, .hero, .pain-card, .icon-card, .deliv-item, .testi-card, .step-item, .contrast-card, .anchor-section, .final-section, .method-section, .testimonials-section, .icons-section, .faq-item, .badge, .hero-title, .hero-sub, .hero_meta, .cta-button, .cta-subtext').forEach(el => {
+        el.classList.add('animate-on-scroll');
+        observer.observe(el);
+      });
+    });
+  </script>
 
 </body>
 </html>
