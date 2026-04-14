@@ -520,7 +520,8 @@
         });
       }, { threshold: 0.1 });
 
-      document.querySelectorAll('.section, .hero, .pain-card, .icon-card, .deliv-item, .testi-card, .step-item, .contrast-card, .anchor-section, .final-section, .method-section, .testimonials-section, .icons-section, .faq-item, .badge, .hero-title, .hero-sub, .hero_meta, .cta-button, .cta-subtext').forEach(function(el) {
+      document.querySelectorAll('.section, .hero, .pain-card, .icon-card, .testi-card, .step-item, .contrast-card, .anchor-section, .final-section, .method-section, .testimonials-section, .icons-section, .faq-item').forEach(function(el) {
+        el.classList.add('animate-on-scroll');
         observer.observe(el);
       });
 
