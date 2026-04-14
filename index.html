@@ -518,9 +518,9 @@
             observer.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.05 });
+      }, { threshold: 0.1 });
 
-      document.querySelectorAll('.animate-on-scroll').forEach(function(el) {
+      document.querySelectorAll('.section, .hero, .pain-card, .icon-card, .deliv-item, .testi-card, .step-item, .contrast-card, .anchor-section, .final-section, .method-section, .testimonials-section, .icons-section, .faq-item, .badge, .hero-title, .hero-sub, .hero_meta, .cta-button, .cta-subtext').forEach(function(el) {
         observer.observe(el);
       });
 
