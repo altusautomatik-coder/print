@@ -9,10 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <script>
-    window.pixelId = "69c98521b1f8fa7b68bc1559";
-  </script>
-  <script src="https://cdn.utmify.com.br/scripts/pixel/pixel.js"></script>
+  <script>window.pixelId = "69c98521b1f8fa7b68bc1559";</script>
+  <script src="https://cdn.utmify.com.br/scripts/pixel/pixel.js" defer></script>
   <script
     src="https://cdn.utmify.com.br/scripts/utms/latest.js"
     data-utmify-prevent-xcod-sck
@@ -26,7 +24,7 @@
   <!-- HERO SECTION -->
   <section class="hero animate-on-scroll" id="hero">
     <div class="hero-img-wrap">
-      <img src="heronew.jpg" alt="Quarto escuro — a noite que não descansa" class="hero-img" />
+      <img src="heronew.jpg" alt="Quarto escuro — a noite que não descansa" class="hero-img" fetchpriority="high" decoding="async" />
       <div class="hero-overlay"></div>
     </div>
     <div class="hero-content">
@@ -345,7 +343,7 @@
   <section class="section anchor-section" id="ancoragem">
     <div class="glow-radial glow-gold"></div>
     <div class="container">
-      <span class="section-tag tag-gold">COMPARE O CUSTO</span>
+      <span class="section-tag tag-gold">O PREÇO DE IMPROVISAR</span>
       <h2 class="section-title">O que você gasta<br/><span class="grad-text-gold">tentando descansar.</span></h2>
       <div class="anchor-compare">
         <div class="anchor-item">
@@ -513,34 +511,28 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
           if (entry.isIntersecting) {
             entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
           }
         });
       }, { threshold: 0.05 });
 
-      document.querySelectorAll('.section, .hero, .pain-card, .icon-card, .deliv-item, .testi-card, .step-item, .contrast-card, .anchor-section, .final-section, .method-section, .testimonials-section, .icons-section, .faq-item, .badge, .hero-title, .hero-sub, .hero_meta, .cta-button, .cta-subtext').forEach(el => {
-        el.classList.add('animate-on-scroll');
+      document.querySelectorAll('.animate-on-scroll').forEach(function(el) {
         observer.observe(el);
       });
 
       // FAQ Accordion
-      document.querySelectorAll('.faq-question').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const item = btn.parentElement;
-          const isActive = item.classList.contains('active');
-          
-          // Close all items
-          document.querySelectorAll('.faq-item').forEach(i => {
+      document.querySelectorAll('.faq-question').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var item = btn.parentElement;
+          var isActive = item.classList.contains('active');
+          document.querySelectorAll('.faq-item').forEach(function(i) {
             i.classList.remove('active');
           });
-          
-          // Open clicked item if it wasn't active
-          if (!isActive) {
-            item.classList.add('active');
-          }
+          if (!isActive) item.classList.add('active');
         });
       });
     });
